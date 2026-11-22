@@ -44,6 +44,7 @@ body{height:100%;margin:0;background:var(--chrome);color:var(--on-chrome);font-f
 .stat b{font-size:15.5px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat b.neg{color:#ff9c8c}
 .repstat{font:inherit;color:inherit;text-align:left;cursor:pointer}
+.lvrow{display:flex;align-items:center;gap:5px}.lvrow em{font-style:normal;font-size:9.5px;font-weight:700;color:#8fd3a0;white-space:nowrap}.lvrow .repbar{flex:1}
 .repbar{display:block;height:4px;border-radius:2px;background:var(--chrome-line);overflow:hidden}
 .repbar i{display:block;height:100%;width:50%;background:var(--tag);transition:width .3s}
 .ctrls{display:flex;gap:5px}
@@ -133,7 +134,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--tag);outline-of
 <div id="app">
   <header class="hud" aria-label="Durum">
     <div class="stat"><span class="lbl">Kasa</span><b id="hMoney">3.500 ₺</b></div>
-    <div class="stat"><span class="lbl" id="hDay">1. gün</span><b id="hClock">08:00</b></div>
+    <button class="stat repstat" id="bLevel" type="button" aria-label="Mahalle seviyesi ve hedefler"><span class="lbl" id="hDay">1. gün</span><b id="hClock">08:00</b><span class="lvrow"><em id="hLv">Sv 1</em><span class="repbar"><i id="hXpFill" style="background:#8fd3a0"></i></span></span></button>
     <button class="stat repstat" id="bRep" type="button" aria-label="İtibar ayrıntıları"><span class="lbl" id="hTier">İtibar</span><b id="hRep">50</b><span class="repbar"><i id="hRepFill"></i></span></button>
     <div class="ctrls">
       <button class="icon-btn" id="bMusic" type="button" aria-label="Müziği kapat" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3.5l10-2v11.2a2.6 2.6 0 1 1-1.6-2.4V5.6L8.6 7v7.7A2.6 2.6 0 1 1 7 12.3z"/></svg></button>
@@ -228,7 +229,7 @@ const sarkSpot = i => (i < 5 ? { x: 314, y: 472 + i * 24 } : { x: Math.max(120, 
 const unlocked = i => PRODUCTS[i].dept === 'base' || !!S.up[PRODUCTS[i].dept];
 const capOf = i => Math.round(PRODUCTS[i].cap * (PRODUCTS[i].dept === 'base' && S.up.bigShelves ? 1.5 : 1));
 const upkeep = () => UPGRADES.reduce((a, u) => a + (S.up[u.k] ? u.upkeep : 0), 0);
-const caseCost = (i, mult = 1) => Math.round(PRODUCTS[i].caseSize * PRODUCTS[i].cost * mult * (1 - tier().disc));
+const caseCost = (i, mult = 1) => Math.round(PRODUCTS[i].caseSize * PRODUCTS[i].cost * mult * (1 - tier().disc - levelDisc()));
 const priceStep = i => (PRODUCTS[i].market >= 100 ? 5 : 1);
 const buyChance = i => { const r = S.prices[i] / PRODUCTS[i].market - (S.tierOff ? 0 : tier().tol); return r <= 1 ? 1 : Math.max(0, 1 - T.sens * (r - 1)); };
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -285,6 +286,7 @@ function addRep(d, why) {
   const after = tierIdx();
   if (after !== before && S.phase === 'day') {
     const t = TIERS[after];
+    sfx(after > before ? 'tierUp' : 'tierDown', 1);
     toast(after > before ? `${t.name} oldun! ${t.good[0] || ''}` : `Dikkat: ${t.name} oldun. ${t.bad[0] || 'Avantajların azaldı.'}`);
   }
 }
@@ -359,7 +361,7 @@ function updatePlayer(dt) {
   if (t.phase === 'toShelf') { t.phase = 'stocking'; t.t = 0; return; }
   if (t.phase === 'stocking') {
     t.t += dt;
-    while (t.t >= UNIT_TIME && p.carry.qty > 0 && S.shelves[t.i] < cap) { t.t -= UNIT_TIME; S.shelves[t.i]++; p.carry.qty--; }
+    while (t.t >= UNIT_TIME && p.carry.qty > 0 && S.shelves[t.i] < cap) { t.t -= UNIT_TIME; S.shelves[t.i]++; p.carry.qty--; sfx('stock', 0.07); }
     if (p.carry.qty <= 0 || S.shelves[t.i] >= cap) {
       if (p.carry.qty > 0) S.depot[t.i] += p.carry.qty;
       p.carry = null; p.task = null;
@@ -390,6 +392,7 @@ function spawnCustomer() {
     skin: SKINS[Math.floor(rng() * SKINS.length)], hair: HAIRS[Math.floor(rng() * HAIRS.length)], pants: PANTS[Math.floor(rng() * PANTS.length)] };
   S.customers.push(c);
   S.stats.visitors++;
+  sfx('door', 1.5);
   nextStop(c);
 }
 function setPatience(c) { c.maxPatience = T.patience * patienceMult(S.day) * tier().pat * (0.8 + rng() * 0.4); c.patience = c.maxPatience; c.scanT = 0; c.serving = false; }
@@ -408,10 +411,12 @@ function nextStop(c) {
 function tryBuy(c, i) {
   const pr = PRODUCTS[i];
   if (!unlocked(i)) { S.stats.ask[pr.dept]++; addRep(-0.15, 'yok'); bubble(c.x, c.y, pr.name + ' yok mu?', 'warn'); return; }
-  if (S.shelves[i] <= 0) { S.stats.missed++; addRep(-0.4, 'bos'); bubble(c.x, c.y, pr.name + ' bitmiş!', 'bad'); return; }
+  if (S.shelves[i] <= 0) { S.stats.missed++; sfx('missed', 0.4); addRep(-0.4, 'bos'); bubble(c.x, c.y, pr.name + ' bitmiş!', 'bad'); return; }
   if (rng() < buyChance(i)) {
     S.shelves[i]--;
     c.basket.push({ i, price: S.prices[i] });
+    (S.stats.sold = S.stats.sold || zeros())[i]++;
+    sfx('bag', 0.25);
     if (S.prices[i] / pr.market < 0.95) addRep(0.1, 'ucuz');
   } else { S.stats.expensive++; addRep(-0.4, 'pahali'); bubble(c.x, c.y, 'Pahalı!', 'warn'); }
 }
@@ -432,6 +437,7 @@ function abandon(c) {
   for (const it of c.basket) S.depot[it.i]++;
   c.basket = [];
   S.stats.angry++;
+  sfx('angry', 0.3);
   addRep(-2.5, 'sabir');
   bubble(c.x, c.y, 'Yeter, gidiyorum!', 'bad');
   leave(c);
@@ -446,6 +452,8 @@ function pay(c) {
   c.paidItems = c.basket.length;
   c.serving = false; c.basket = [];
   bubble(c.x, c.y - 4, '+' + fmt(sum), 'good');
+  sfx('pay', 0.08);
+  addXP(1);
   leave(c);
 }
 function finishSark(c) {
@@ -703,6 +711,8 @@ function pkDeliver(o) {
   if (missing) { S.stats.pkMissing += missing; addRep(-0.5 * missing, 'paketeksik'); } else addRep(0.6, 'paket');
   P.list = P.list.filter(x => x !== o);
   bubble(PK_PT.x, PK_PT.y, '+' + fmt(sum), 'good');
+  sfx('packet', 0.2);
+  addXP(2);
 }
 function updatePacker(dt, e, a) {
   const P = pkState();
@@ -727,7 +737,7 @@ function updatePacker(dt, e, a) {
     else if (S.depot[i] > 0) { S.depot[i]--; o.picked.push(i); }
     S.stats.empWork++; e.work = (e.work || 0) + 1; t.k++; t.phase = 'go'; return;
   }
-  if (t.phase === 'door') { o.state = 'ready'; t.phase = 'wait'; t.t = 0; if (!P.motor) P.motor = { x: -30, state: 'in', t: 0 }; return; }
+  if (t.phase === 'door') { o.state = 'ready'; t.phase = 'wait'; t.t = 0; if (!P.motor) { P.motor = { x: -30, state: 'in', t: 0 }; sfx('motor', 1); } return; }
   if (t.phase === 'wait') {
     const m = P.motor;
     if (!m) { P.motor = { x: -30, state: 'in', t: 0 }; return; }
@@ -817,7 +827,7 @@ const waitingTruck = () => S.deliveries.find(d => d.status === 'waiting');
 function updateDeliveries(dt) {
   for (const d of S.deliveries) {
     if (d.status === 'coming' && S.minute >= d.eta) {
-      if (!waitingTruck()) { d.status = 'waiting'; d.wait = T.truckWait; toast((d.rush ? 'Acil sipariş' : 'Kamyon') + ' geldi! Arka kapıda imza bekliyor.'); }
+      if (!waitingTruck()) { d.status = 'waiting'; d.wait = T.truckWait; sfx('horn', 1); toast((d.rush ? 'Acil sipariş' : 'Kamyon') + ' geldi! Arka kapıda imza bekliyor.'); }
       else d.eta = S.minute + 10;
     }
   }
@@ -826,7 +836,7 @@ function updateDeliveries(dt) {
   w.wait -= dt;
   if (w.wait <= 0) {
     w.status = 'coming'; w.eta = S.minute + 60;
-    S.money -= FEE; S.stats.fees += FEE;
+    S.money -= FEE; S.stats.fees += FEE; sfx('fee');
     const p = S.player; if (p.task && p.task.type === 'sign') p.task = null;
     toast('Şoför bekleyemedi: ' + fmt(FEE) + ' bekleme ücreti, mal 1 saat sonra tekrar gelecek.');
   }
@@ -837,7 +847,166 @@ function completeSign() {
   w.units.forEach((u, i) => { S.depot[i] += u; });
   S.deliveries = S.deliveries.filter(d => d !== w);
   bubble(SIGN_PT.x, SIGN_PT.y, 'Depoya indi', 'good');
+  sfx('sign');
   toast('Mal depoda. Rafa dokunarak dizebilirsin.');
+}
+
+/* ---------- Ses efektleri: 8 bit, kodla üretilir (dosya yok) ---------- */
+let actx = null, sfxOn = true;
+try { sfxOn = localStorage.getItem('bakkal.sfx') !== 'off'; } catch (e) {}
+function audioCtx() {
+  if (typeof musicUnlocked === 'undefined' || !musicUnlocked) return null;
+  if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+  if (actx.state === 'suspended') actx.resume().catch(() => {});
+  return actx;
+}
+function tone(freq, dur, type = 'square', vol = 0.06, when = 0, slide = 0) {
+  const a = audioCtx(); if (!a) return;
+  const t = a.currentTime + when, o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq * slide), t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.03);
+}
+function noise(dur, vol = 0.04, when = 0, freq = 2500) {
+  const a = audioCtx(); if (!a) return;
+  const t = a.currentTime + when, n = Math.ceil(a.sampleRate * dur), buf = a.createBuffer(1, n, a.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+  const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+  s.buffer = buf; f.type = 'bandpass'; f.frequency.value = freq; g.gain.value = vol;
+  s.connect(f).connect(g).connect(a.destination); s.start(t);
+}
+const notes = (arr, type, vol, gap, len) => arr.forEach((f, i) => tone(f, len, type, vol, i * gap));
+const SFX = {
+  pay: () => { tone(1319, 0.07, 'square', 0.045); tone(1976, 0.18, 'square', 0.045, 0.07); },               // kasa: çın
+  door: () => { tone(988, 0.28, 'sine', 0.035); tone(784, 0.4, 'sine', 0.035, 0.2); },                       // kapı zili
+  horn: () => { tone(311, 0.2, 'sawtooth', 0.04); tone(262, 0.32, 'sawtooth', 0.04, 0.24); },                // kamyon kornası
+  fee: () => tone(260, 0.45, 'square', 0.045, 0, 0.55),
+  angry: () => { tone(330, 0.16, 'square', 0.045, 0, 0.75); tone(220, 0.3, 'square', 0.045, 0.15, 0.7); },   // kızgın müşteri
+  missed: () => tone(185, 0.12, 'triangle', 0.05),
+  stock: () => tone(520 + Math.random() * 260, 0.035, 'square', 0.018),                                      // rafa dizme
+  sign: () => { noise(0.08, 0.05, 0, 3200); noise(0.1, 0.05, 0.1, 2600); },                                  // imza
+  motor: () => { tone(95, 0.7, 'sawtooth', 0.03, 0, 2.2); tone(70, 0.7, 'square', 0.015, 0, 2); },           // motosiklet
+  packet: () => { tone(988, 0.06, 'square', 0.045); tone(1319, 0.06, 'square', 0.045, 0.06); tone(1760, 0.16, 'square', 0.045, 0.12); },
+  bag: () => noise(0.09, 0.03, 0, 4500),                                                                     // poşet
+  tierUp: () => notes([523, 659, 784, 1047], 'square', 0.04, 0.09, 0.14),
+  tierDown: () => notes([523, 415, 330, 262], 'square', 0.04, 0.11, 0.16),
+  goal: () => notes([784, 988, 1175, 1568], 'square', 0.045, 0.08, 0.15),
+  level: () => { notes([523, 659, 784, 1047, 784, 1047, 1319], 'square', 0.045, 0.1, 0.18); tone(262, 0.8, 'triangle', 0.05); },
+  click: () => tone(1100, 0.025, 'square', 0.015),
+};
+const lastSfx = {};
+function sfx(name, gap = 0.05) {
+  if (!sfxOn || !SFX[name]) return;
+  const now = performance.now() / 1000;
+  if (lastSfx[name] && now - lastSfx[name] < gap) return;
+  lastSfx[name] = now;
+  try { SFX[name](); } catch (e) {}
+}
+
+/* ---------- Mahalle seviyesi ---------- */
+const xpNeed = lv => 100 + 60 * lv;               // bir sonraki seviye için gereken puan
+const LEVELS = {
+  2: { cash: 500 }, 3: { disc: 0.03, text: 'Toptancı %3 indirim yapar' }, 4: { cash: 1000 },
+  5: { cust: 0.05, text: 'Mahallede tanındın: müşteri %5 fazla' }, 6: { cash: 1500 },
+  7: { disc: 0.03, text: 'Toptancı %3 daha indirim (toplam %6)' }, 8: { cash: 2000 },
+  9: { cust: 0.05, text: 'Müşteri %5 daha fazla (toplam %10)' }, 10: { cash: 3000, text: 'Unvan: Mahallenin efsanesi' },
+};
+const levelReward = lv => LEVELS[lv] || { cash: 2000 };
+const rewardText = lv => { const r = levelReward(lv); return [r.cash ? '+' + fmt(r.cash) : '', r.text || ''].filter(Boolean).join(' · '); };
+const levelDisc = () => { let d = 0; for (let l = 2; l <= (S.level || 1); l++) d += levelReward(l).disc || 0; return d; };
+const levelCust = () => { let c = 0; for (let l = 2; l <= (S.level || 1); l++) c += levelReward(l).cust || 0; return c; };
+const LEVEL_NAMES = ['', 'Yeni bakkal', 'Tanıdık yüz', 'Mahallenin bakkalı', 'Güvenilir esnaf', 'Sevilen esnaf', 'Sokağın yıldızı', 'Semtin bakkalı', 'Usta esnaf', 'Efsaneye az kaldı', 'Mahallenin efsanesi'];
+const levelName = lv => LEVEL_NAMES[Math.min(lv, 10)] || LEVEL_NAMES[10];
+function ensureLevel() {
+  if (S.level) return;
+  // eski kayıt: oynanan güne göre seviye verilir, para ödülleri geriye dönük verilmez
+  S.level = Math.min(10, 1 + Math.floor((S.day - 1) / 3)); S.xp = 0;
+}
+function addXP(n) {
+  ensureLevel();
+  S.xp += n; if (S.stats) S.stats.xp = (S.stats.xp || 0) + n;
+  while (S.xp >= xpNeed(S.level)) {
+    S.xp -= xpNeed(S.level); S.level++;
+    const r = levelReward(S.level);
+    if (r.cash) { S.money += r.cash; if (S.stats) S.stats.levelCash = (S.stats.levelCash || 0) + r.cash; }
+    if (S.stats) (S.stats.levelUps = S.stats.levelUps || []).push(S.level);
+    sfx('level', 0.5);
+    toast(`Mahalle seviyesi ${S.level}: ${levelName(S.level)}! ${rewardText(S.level)}`);
+  }
+}
+
+/* ---------- Günlük hedefler ---------- */
+const expectedCustomers = () => 52 * T.density * dayMult(S.day) * tier().cust * (1 + levelCust());
+const roundTo = (v, s) => Math.max(s, Math.round(v / s) * s);
+const soldOf = idx => idx.reduce((a, i) => a + ((S.stats.sold || [])[i] || 0), 0);
+const GOAL_TYPES = {
+  serve:   { ok: () => true, make: () => ({ target: roundTo(expectedCustomers() * 0.65, 5) }), text: g => `${g.target} müşteriye satış yap`, prog: () => S.stats.buyers, live: true },
+  revenue: { ok: () => true, make: () => ({ target: roundTo(expectedCustomers() * 38, 100) }), text: g => `Günü ${fmt(g.target)} ciroyla kapat`, prog: () => S.stats.revenue, live: true },
+  noAngry: { ok: () => true, make: () => ({ target: 0 }), text: () => 'Hiçbir müşteri beklemekten bıkıp gitmesin', prog: () => S.stats.angry, end: true, fail: () => S.stats.angry > 0 },
+  fewMissed: { ok: () => true, make: () => ({ target: Math.max(3, Math.round(expectedCustomers() * 0.08)) }), text: g => `Boş raf yüzünden en fazla ${g.target} satış kaçsın`, prog: () => S.stats.missed, end: true, fail: g => S.stats.missed > g.target },
+  truck:   { ok: () => S.deliveries.length > 0 || (S.stats && S.stats.spent > 0), make: () => ({ target: 0 }), text: () => 'Kamyonu bekletmeden imzala', prog: () => S.stats.fees, end: true, fail: () => S.stats.fees > 0 },
+  product: { ok: () => true, make: () => { const pool = PRODUCTS.map((p, i) => i).filter(i => unlocked(i) && demandRamp(i, S.day) > 0); const i = pool[Math.floor(rng() * pool.length)]; const share = PRODUCTS[i].weight / PRODUCTS.reduce((a, p, k) => a + (unlocked(k) ? p.weight * demandRamp(k, S.day) : 0), 0); return { p: i, target: Math.max(4, Math.round(expectedCustomers() * 2 * share * 0.6)) }; }, text: g => `${g.target} ${PRODUCTS[g.p].name} sat`, prog: g => soldOf([g.p]), live: true },
+  packets: { ok: () => emps().some(e => e.role === 'paket'), make: () => ({ target: 4 + Math.floor(S.day / 8) }), text: g => `${g.target} paket siparişi teslim et`, prog: () => S.stats.pkDone, live: true },
+  deli:    { ok: () => S.up.sark, make: () => ({ target: 6 + Math.floor(S.day / 6) }), text: g => `Şarküteriden ${g.target} ürün sat`, prog: () => soldOf([9, 10, 11]), live: true },
+  produce: { ok: () => S.up.manav, make: () => ({ target: 10 + Math.floor(S.day / 4) }), text: g => `Manavdan ${g.target} ürün sat`, prog: () => soldOf([6, 7, 8]), live: true },
+  repUp:   { ok: () => S.rep < 95, make: () => ({ target: 3 }), text: () => 'İtibarını gün içinde 3 puan artır', prog: () => S.rep - S.stats.repStart, live: true },
+};
+function makeGoals() {
+  const types = Object.keys(GOAL_TYPES).filter(k => GOAL_TYPES[k].ok());
+  const goals = [];
+  while (goals.length < 3 && types.length) {
+    const k = types.splice(Math.floor(rng() * types.length), 1)[0];
+    const g = { type: k, ...GOAL_TYPES[k].make(), done: false, failed: false };
+    g.money = roundTo(100 + 8 * S.day + (GOAL_TYPES[k].end ? 50 : 0), 50);
+    g.xp = 25 + Math.min(25, S.day);
+    goals.push(g);
+  }
+  S.goals = goals; S.goalsDay = S.day;
+}
+function ensureGoals() { ensureLevel(); if (!S.goals || S.goalsDay !== S.day) makeGoals(); }
+function completeGoal(g) {
+  g.done = true; S.money += g.money; S.stats.goalMoney = (S.stats.goalMoney || 0) + g.money;
+  sfx('goal', 0.3);
+  toast(`Hedef tamam: ${GOAL_TYPES[g.type].text(g)}. +${fmt(g.money)}`);
+  addXP(g.xp);
+}
+function checkGoals(final) {
+  if (!S.goals || S.goalsDay !== S.day) return;
+  for (const g of S.goals) {
+    if (g.done || g.failed) continue;
+    const T_ = GOAL_TYPES[g.type];
+    if (T_.end) {
+      if (T_.fail(g)) { g.failed = true; continue; }
+      if (final) completeGoal(g);
+    } else if (T_.prog(g) >= g.target) completeGoal(g);
+    else if (final) g.failed = true;
+  }
+}
+function goalsHtml(showState) {
+  ensureGoals();
+  return `<span class="sect">Bugünün hedefleri</span><div class="inv">${S.goals.map(g => {
+    const T_ = GOAL_TYPES[g.type], p = T_.prog(g), state = g.done ? '<span class="t-good">✓ tamam</span>' : g.failed ? '<span class="t-bad">✗ olmadı</span>' : T_.end ? '<span style="color:var(--muted)">gün sonunda</span>' : `<span style="color:var(--muted)">${Math.max(0, Math.floor(p))}/${g.target}</span>`;
+    return `<div class="invc${g.done ? ' done' : ''}" style="grid-template-columns:minmax(0,1fr) auto"><b style="grid-column:1">${T_.text(g)}</b><span style="grid-column:2;grid-row:1/span 2;font-size:13px;font-weight:600;white-space:nowrap">${showState ? state : ''}</span><p>Ödül: ${fmt(g.money)} · ${g.xp} puan</p></div>`;
+  }).join('')}</div>`;
+}
+function levelBarHtml() {
+  ensureLevel();
+  const need = xpNeed(S.level), f = clamp(S.xp / need, 0, 1);
+  return `<div class="invc" style="grid-template-columns:minmax(0,1fr)"><b>Mahalle seviyesi ${S.level} · ${levelName(S.level)}</b>
+    <div style="height:8px;border-radius:4px;background:var(--paper-2);overflow:hidden"><div style="height:100%;width:${(f * 100).toFixed(1)}%;background:var(--tag)"></div></div>
+    <p>${Math.floor(S.xp)} / ${need} puan · Sonraki seviye: ${rewardText(S.level + 1)}</p></div>`;
+}
+function levelHtml() {
+  ensureLevel();
+  const rows = [];
+  for (let l = 2; l <= Math.max(10, S.level + 2); l++) rows.push(`<div class="invc${l <= S.level ? ' done' : ''}" style="grid-template-columns:minmax(0,1fr) auto"><b style="grid-column:1">Seviye ${l} · ${levelName(l)}</b><span style="grid-column:2;grid-row:1/span 2;font-size:13px;font-weight:600">${l <= S.level ? '<span class="t-good">✓</span>' : ''}</span><p>${rewardText(l)}</p></div>`);
+  return `<div class="head"><span class="eyebrow">Mahalle seviyesi</span><h2 id="cardTitle">${levelName(S.level).toLocaleUpperCase('tr')}</h2>
+  <p>Her satış, teslim edilen paket ve tamamlanan hedef puan kazandırır. Seviye atladıkça para ödülü ve kalıcı avantajlar açılır.</p></div>
+  ${levelBarHtml()}
+  ${S.phase === 'day' || S.phase === 'morning' ? goalsHtml(S.phase === 'day') : ''}
+  <span class="sect">Seviyeler</span><div class="inv">${rows.join('')}</div>
+  <div class="actions"><button class="btn primary" type="button" data-act="closeModal" data-focus>Tamam</button></div>`;
 }
 
 /* ---------- Gün akışı ---------- */
@@ -848,7 +1017,7 @@ function step(dt) {
     if (S.minute >= CLOSE) { S.closed = true; toast('Saat 20:00, kapıyı kapattın. İçerideki müşteriler çıkınca gün biter.'); }
     else {
       const h = clamp(Math.floor(S.minute / 60) - 8, 0, HOURLY.length - 1);
-      const rate = HOURLY[h] * T.density * dayMult(S.day) * tier().cust / hourSec;
+      const rate = HOURLY[h] * T.density * dayMult(S.day) * tier().cust * (1 + levelCust()) / hourSec;
       if (rng() < rate * dt) spawnCustomer();
     }
   }
@@ -862,6 +1031,7 @@ function step(dt) {
   serveFront(S.queue, queueSpot, atRegister(0) || !!empAt('kasa'), scanNeed, pay, dt);
   if (S.up.kasa2) serveFront(qArr(1), queueSpot2, atRegister(1) || !!empAt('kasa2'), scanNeed, pay, dt);
   serveFront(S.sarkQueue, sarkSpot, atSark() || !!empAt('sark'), sarkNeed, finishSark, dt);
+  checkGoals(false);
   if (S.closed && S.customers.length === 0) endDay();
 }
 function endDay() {
@@ -879,10 +1049,11 @@ function endDay() {
     S.shelves[i] = Math.max(0, S.shelves[i] - rot);
   });
   { const P = pkState(); P.list.slice().forEach(o => pkCancel(o, false)); P.motor = null; }
+  checkGoals(true);
   empEndOfDay(st);
   loanEndOfDay(st);
   addRep((50 - S.rep) * 0.08, 'gece');
-  S.report = { ...st, ask: { ...st.ask }, repWhy: { ...st.repWhy }, day: S.day, repEnd: S.rep, money: S.money };
+  S.report = { ...st, ask: { ...st.ask }, repWhy: { ...st.repWhy }, day: S.day, repEnd: S.rep, money: S.money, levelUps: (st.levelUps || []).slice() };
   // gece itibar yavaşça ortalamaya döner
   S.phase = 'report';
   render();
@@ -1321,7 +1492,10 @@ function updateHud(now, force) {
   lastHud = now;
   $('hMoney').textContent = fmt(S.money);
   $('hMoney').classList.toggle('neg', S.money < 0);
+  ensureLevel();
   $('hDay').textContent = S.day + '. gün';
+  $('hLv').textContent = 'Sv ' + S.level;
+  $('hXpFill').style.width = (clamp(S.xp / xpNeed(S.level), 0, 1) * 100) + '%';
   $('hClock').textContent = hhmm(Math.min(S.minute, 1439));
   $('hRep').textContent = Math.round(S.rep) + (S.phase === 'day' ? '' : '');
   $('hTier').textContent = tier().name;
@@ -1342,6 +1516,7 @@ function updateHud(now, force) {
     if (empty.length) chips.push(['warn', 'Boş: ' + empty.join(', ')]);
     const low = PRODUCTS.filter((p, i) => unlocked(i) && S.shelves[i] > 0 && S.shelves[i] <= capOf(i) * 0.25).map(p => p.name);
     if (low.length) chips.push(['', 'Azalan: ' + low.join(', ')]);
+    if (S.goals && S.goalsDay === S.day) { const dn = S.goals.filter(g => g.done).length; chips.push([dn === S.goals.length ? '' : '', 'Hedef ' + dn + '/' + S.goals.length]); }
     if (!chips.length) chips.push(['', atRegister() ? 'Kasadasın, kuyruk yok' : 'Sakin bir an']);
   }
   const html = chips.map(([k, t]) => '<span class="chip ' + k + '">' + t + '</span>').join('');
@@ -1354,6 +1529,7 @@ function render() {
   let html = '';
   if (modal === 'tune') html = tuneHtml();
   else if (modal === 'rep') html = repHtml();
+  else if (modal === 'level') html = levelHtml();
   else if (modal === 'event') html = eventHtml();
   else if (modal === 'rush') html = ordersHtml(true);
   else if (S.phase === 'intro') html = introHtml();
@@ -1364,7 +1540,7 @@ function render() {
     const keep = card.dataset.view === (modal || S.phase) ? card.scrollTop : 0;
     card.innerHTML = html; card.dataset.view = modal || S.phase; card.scrollTop = keep;
     if (!keep) { const f = card.querySelector('[data-focus]'); if (f) f.focus({ preventScroll: true }); }
-    if (modal === 'rush' || S.phase === 'morning') refreshOrders(modal === 'rush');
+    if (document.getElementById('goBtn')) refreshOrders(modal === 'rush');
   }
   updateHud(performance.now(), true);
 }
@@ -1377,7 +1553,7 @@ function introHtml() {
     <li><i class="lg reg"></i><span><b>Kasaya dokun:</b> kasada durur, sıradakinin hesabını alırsın. Kasada değilsen kimse ödeyemez.</span></li>
     <li><i class="lg cust"></i><span><b>Müşterinin sabrı biter.</b> Başının üstündeki çubuk kızarınca gider. Aldığı ürünler beyaz poşette durur, ödeyince poşet yeşile döner. Raf boşsa, fiyat pahalıysa ya da aradığını satmıyorsan itibar düşer.</span></li>
     <li><i class="lg truck"></i><span><b>Kamyon arka kapıya gelince ona dokun ve imzala.</b> Geç kalırsan şoför ${fmt(FEE)} keser, 1 saat sonra gelir.</span></li>
-    <li><i class="lg tag"></i><span><b>Büyümek zorundasın.</b> 3. günden sonra sebze-meyve, 5. günden sonra peynir ve sucuk soranlar çıkar. Manav ve şarküteriyi sabah ekranından açarsın.</span></li>
+    <li><i class="lg tag"></i><span><b>Her gün 3 hedefin olur.</b> Tamamlarsan para ve puan kazanırsın; puanla mahalle seviyen yükselir, ödüller açılır. <b>Büyümek zorundasın.</b> 3. günden sonra sebze-meyve, 5. günden sonra peynir ve sucuk soranlar çıkar. Manav ve şarküteriyi sabah ekranından açarsın.</span></li>
   </ul>
   <div class="note">Üstteki itibar kutusuna dokunursan itibarın neyi değiştirdiğini görürsün. Sabah ekranından bankadan kredi çekebilirsin. Yetişemezsen sabah ekranından eleman alabilirsin; manav ve şarküteri açtıkça kadro büyür, istersen ikinci kasa da kurarsın. Hırsız ve şube sonraki adımlar. Sağ üstteki ayar düğmesiyle dengeyi değiştirebilirsin.</div>
   <div class="actions"><button class="btn primary" type="button" data-act="toMorning" data-focus>Sabaha geç</button></div>`;
@@ -1452,7 +1628,7 @@ function ordersHtml(rush) {
   const head = rush
     ? `<span class="eyebrow">Acil sipariş · %25 pahalı · Saat ${hhmm(S.minute)}</span><h2 id="cardTitle">ACİL SİPARİŞ</h2><p>Yaklaşık 1 saat içinde gelir. Bu ekran açıkken oyun durur.</p>`
     : `<span class="eyebrow">Sabah · ${S.day}. gün</span><h2 id="cardTitle">${S.day}. GÜN</h2><p>Siparişi kamyon 09:30–11:30 arasında getirir.${r ? ' Dün net ' + fmt(netOf(r)) + ', itibar ' + Math.round(r.repEnd) + '.' : ''}${S.day === 1 ? ' İlk gün için önerilen bir sipariş hazır.' : ''}</p>`;
-  return `<div class="head">${head}</div>${rush ? '' : newsHtml() + empHtml() + invHtml() + bankHtml() + '<span class="sect">Sipariş ve fiyatlar</span>'}<div class="prows">${rows}</div>
+  return `<div class="head">${head}</div>${rush ? '' : newsHtml() + goalsHtml(false) + empHtml() + invHtml() + bankHtml() + '<span class="sect">Sipariş ve fiyatlar</span>'}<div class="prows">${rows}</div>
   <div class="total" id="tot"></div>
   <div class="note" id="shortHint" hidden><b>Para yetmiyor.</b> Siparişi azalt ya da sıfırla; gerekirse yukarıdaki yatırımlardan birini geri al. Sipariş vermeden de açabilirsin, raftaki malı satarsın.
   <div class="actions" style="margin-top:8px"><button class="btn ghost" type="button" data-act="${rush ? 'rzero' : 'zero'}">Siparişi sıfırla</button></div></div>
@@ -1481,7 +1657,7 @@ function refreshOrders(rush) {
   if (hint) hint.hidden = total <= S.money;
   card.querySelectorAll('[data-act="buy"]').forEach(b => { const u = UPGRADES.find(x => x.k === b.dataset.k); b.disabled = S.money < u.cost; });
 }
-const netOf = r => r.revenue - r.cogs - r.rent - r.upkeep - r.fees - r.spoiled - (r.wage || 0) - (r.loanPaid || 0);
+const netOf = r => (r.goalMoney || 0) + (r.levelCash || 0) + r.revenue - r.cogs - r.rent - r.upkeep - r.fees - r.spoiled - (r.wage || 0) - (r.loanPaid || 0);
 function reportHtml() {
   const r = S.report, net = netOf(r), broke = S.money < 0 || S.bankrupt;
   const leaks = [
@@ -1498,6 +1674,8 @@ function reportHtml() {
   <dl class="ledger">
     <dt>Ciro</dt><dd>${fmt(r.revenue)}</dd>
     ${r.pkDone || r.pkLate ? `<dt style="padding-left:12px">içinden paket servis (${r.pkDone} teslim${r.pkLate ? ', ' + r.pkLate + ' gecikti' : ''}${r.pkMissing ? ', ' + r.pkMissing + ' ürün eksik' : ''})</dt><dd>${fmt(r.pkRevenue)}</dd>` : ''}
+    ${r.goalMoney ? `<dt>Hedef ödülleri</dt><dd class="t-good">+${fmt(r.goalMoney)}</dd>` : ''}
+    ${r.levelCash ? `<dt>Seviye ödülü</dt><dd class="t-good">+${fmt(r.levelCash)}</dd>` : ''}
     <dt>Satılan malın maliyeti</dt><dd>${fmt(-r.cogs)}</dd>
     <dt>Kira</dt><dd>${fmt(-r.rent)}</dd>
     ${r.wage ? `<dt>Maaş${r.staff > 1 ? 'lar (' + r.staff + ' kişi)' : ''}</dt><dd>${fmt(-r.wage)}</dd>` : ''}
@@ -1518,6 +1696,9 @@ function reportHtml() {
     ${Object.entries(r.repWhy || {}).filter(([, v]) => Math.abs(v) >= 0.5).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).map(([k, v]) => `<dt style="padding-left:12px">${REP_WHY[k]}</dt><dd class="${v > 0 ? 't-good' : 't-bad'}">${v > 0 ? '+' : '−'}${Math.abs(v).toFixed(1).replace('.', ',')}</dd>`).join('')}
     <dt>Kasa (bugün mala ${fmt(r.spent)} ödendi)</dt><dd class="${S.money < 0 ? 't-bad' : ''}">${fmt(S.money)}</dd>
   </dl>
+  ${S.goals && S.goalsDay === r.day ? goalsHtml(true) : ''}
+  <span class="sect">Mahalle seviyesi${r.xp ? ' · bugün +' + Math.round(r.xp) + ' puan' : ''}</span>${levelBarHtml()}
+  ${(r.levelUps || []).map(l => `<div class="note"><b>Seviye atladın: ${l} · ${levelName(l)}!</b> ${rewardText(l)}</div>`).join('')}
   ${r.overnight ? `<div class="note">Gün içinde imzalanmayan ${r.overnight} teslimat gece depoya bırakıldı.</div>` : ''}
   <div class="note"><b>Günün dersi:</b> ${broke ? (S.bankrupt ? 'Üst üste iki kredi taksiti ödenmedi; banka dükkâna el koydu.' : 'Kasa eksiye düştü, bakkal kapandı.') : lesson}</div>
   <div class="actions">${broke ? '<button class="btn primary" type="button" data-act="restart" data-focus>Baştan başla</button>' : '<button class="btn primary" type="button" data-act="toMorning" data-focus>Sabaha geç</button>'}</div>`;
@@ -1534,6 +1715,7 @@ function settingsHtml() {
   return `<div class="head"><span class="eyebrow">Ayarlar</span><h2 id="cardTitle">AYARLAR</h2></div>
   <div class="inv">
     <div class="invc"><b>Müzik</b><p>Sabah, gün içi ve akşam müzikleri.</p><button class="btn ${musicOn ? 'primary' : 'ghost'}" type="button" data-act="musicToggle">${musicOn ? 'Açık' : 'Kapalı'}</button></div>
+    <div class="invc"><b>Ses efektleri</b><p>Kasa, kapı zili, korna, motor ve diğer sesler.</p><button class="btn ${sfxOn ? 'primary' : 'ghost'}" type="button" data-act="sfxToggle">${sfxOn ? 'Açık' : 'Kapalı'}</button></div>
     <div class="invc"><b>Kayıt</b><p>Oyunun bu cihazda otomatik kaydediliyor; uygulama kapansa da kaldığın günden devam eder.</p><button class="btn ghost" type="button" data-act="newGame">Yeni oyun</button></div>
   </div>
   <div class="actions"><button class="btn primary" type="button" data-act="closeModal" data-focus>Kapat</button></div>`;
@@ -1555,6 +1737,7 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b || b.disabled) return;
   const act = b.dataset.act, i = +b.dataset.i, d = +b.dataset.d;
+  sfx('click', 0.03);
   if (act === 'toMorning') { if (S.phase === 'intro') { S.phase = 'morning'; render(); } else nextMorning(); }
   else if (act === 'open') openStore();
   else if (act === 'ord') { S.orders[i] = clamp(S.orders[i] + d, 0, 30); refreshOrders(false); }
@@ -1578,6 +1761,7 @@ document.addEventListener('click', e => {
   else if (act === 'rzero') { S.rushOrders = zeros(); refreshOrders(true); }
   else if (act === 'placeRush') placeRush();
   else if (act === 'closeModal') { modal = null; render(); }
+  else if (act === 'sfxToggle') { sfxOn = !sfxOn; try { localStorage.setItem('bakkal.sfx', sfxOn ? 'on' : 'off'); } catch (e) {} render(); }
   else if (act === 'musicToggle') { $('bMusic').click(); render(); }
   else if (act === 'resetTune') { T = { ...DEFAULT_T }; saveTune(); render(); }
   else if (act === 'restart') { S = newGame(); S.phase = 'morning'; saveGame(); render(); }
@@ -1606,6 +1790,7 @@ $('bPause').addEventListener('click', () => {
 $('bSpeed').addEventListener('click', () => { speed = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length]; $('bSpeed').textContent = String(speed).replace('.', ',') + '×'; });
 $('bMusic').addEventListener('click', () => { musicOn = !musicOn; try { localStorage.setItem('bakkal.music', musicOn ? 'on' : 'off'); } catch (e) {} setMusicBtn(); toast(musicOn ? 'Müzik açık.' : 'Müzik kapalı.'); });
 $('bTune').addEventListener('click', () => { modal = modal === 'tune' ? null : 'tune'; render(); });
+$('bLevel').addEventListener('click', () => { modal = modal === 'level' ? null : 'level'; render(); });
 $('bRep').addEventListener('click', () => { modal = modal === 'rep' ? null : 'rep'; render(); });
 $('bRush').addEventListener('click', () => { if (S.phase === 'day' && !S.closed) { S.rushOrders = zeros(); modal = 'rush'; render(); } });
 canvas.addEventListener('pointerdown', e => {
