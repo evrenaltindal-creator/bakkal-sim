@@ -648,6 +648,46 @@ function hire(n) {
   S.cands = null; render();
   toast(c.name + ' işe başladı (' + ROLES[role] + '). Görevini sabah ekranından değiştirebilirsin.');
 }
+/* Gün içinde elemana dokun → görev menüsü → anında yeni görev */
+function empAtPoint(x, y) {
+  for (const e of working()) { const a = e.a; if (Math.abs(x - a.x) <= 9 && y >= a.y - 22 && y <= a.y + 9) return e; }
+  return null;
+}
+function empMenu(e) {
+  const roles = Object.keys(ROLES).filter(roleOk), w = 78, h = 18, gap = 3, total = roles.length * (h + gap) - gap;
+  let mx = clamp(e.a.x - w / 2, 10, W - 10 - w), my = e.a.y - 30 - total;
+  if (my < 34) my = e.a.y + 14;
+  return roles.map((r, k) => ({ r, x: mx, y: my + k * (h + gap), w, h }));
+}
+function releasePacket(e) {
+  const t = e.a && e.a.task; if (!t || t.o === undefined || !S.pk) return;
+  const o = S.pk.list.find(x => x.id === t.o);
+  if (o && o.state !== 'ready') { o.picked.forEach(i => { S.depot[i]++; }); o.picked = []; o.state = 'new'; }
+}
+function changeRoleNow(e, r) {
+  if (!roleOk(r) || e.role === r) { S.empSel = null; return; }
+  const before = new Map(emps().map(x => [x, x.role]));
+  setRole(e, r);
+  for (const x of working()) if (before.get(x) !== x.role) { releasePacket(x); empGoStation(x); }
+  // oyuncu, elemanın yeni yerindeyse kenara çekilir
+  if ((r === 'kasa' && atRegister(0)) || (r === 'kasa2' && atRegister(1)) || (r === 'sark' && atSark())) assign({ type: 'walk' }, { ...IDLE_PT });
+  S.empSel = null;
+  sfx('click', 0.03);
+  toast(`${e.name}: ${ROLES[r]}.`);
+}
+function drawEmpMenu(c) {
+  if (!S.empSel) return;
+  const e = working()[S.empSel.n]; if (!e) { S.empSel = null; return; }
+  const items = empMenu(e), x0 = items[0].x - 4, y0 = items[0].y - 4, last = items[items.length - 1];
+  c.fillStyle = 'rgba(13,30,24,.92)'; rr(c, x0, y0, items[0].w + 8, last.y + last.h - y0 + 4, 7); c.fill();
+  c.font = '600 9px ' + FONT; c.textAlign = 'center';
+  for (const it of items) {
+    const cur = it.r === e.role, who = STATION_ROLES.includes(it.r) && !cur && working().find(x => x !== e && x.role === it.r);
+    c.fillStyle = cur ? '#f0c032' : '#21493b'; rr(c, it.x, it.y, it.w, it.h, 4); c.fill();
+    c.fillStyle = cur ? '#2a2208' : '#eaf2ec';
+    c.fillText(ROLES[it.r] + (who ? ' ⇄' : ''), it.x + it.w / 2, it.y + 12.5);
+  }
+}
 function setRole(e, r) {
   if (!roleOk(r)) return;
   if (STATION_ROLES.includes(r)) { const other = emps().find(x => x !== e && x.role === r); if (other) other.role = STATION_ROLES.includes(e.role) ? e.role : 'reyon'; }
@@ -1446,6 +1486,14 @@ const stopBtn = c => ({ x: c.x - 18, y: c.y - 44, w: 36, h: 16 });
 function handleTap(x, y) {
   if (S.phase !== 'day' || modal) return;
   S.fx.push({ x, y, t: 0 });
+  if (S.empSel) {
+    const e = working()[S.empSel.n];
+    const hit = e && empMenu(e).find(it => x >= it.x && x <= it.x + it.w && y >= it.y && y <= it.y + it.h);
+    S.empSel = null;
+    if (hit) { changeRoleNow(e, hit.r); return; }
+  }
+  const em = empAtPoint(x, y);
+  if (em) { S.empSel = { n: working().indexOf(em) }; S.sel = null; return; }
   if (S.sel) {
     const c = S.customers.find(k => k.id === S.sel.id), b = c && stopBtn(c);
     if (b && x >= b.x - 4 && x <= b.x + b.w + 4 && y >= b.y - 4 && y <= b.y + b.h + 4) { accuse(c); return; }
@@ -1797,6 +1845,7 @@ function draw(now) {
     c.fillText(b.text, bx + tw / 2, y);
     c.globalAlpha = 1;
   }
+  drawEmpMenu(c);
   for (const f of S.fx) {
     c.globalAlpha = 1 - f.t / 0.4; c.strokeStyle = '#1f6b4f'; c.lineWidth = 2;
     c.beginPath(); c.arc(f.x, f.y, 6 + f.t * 40, 0, Math.PI * 2); c.stroke(); c.globalAlpha = 1;
@@ -1913,7 +1962,7 @@ function empHtml() {
     return `<div class="invc" style="grid-template-columns:minmax(0,1fr)"><b>${e.name} · ${fmt(e.wage)}/gün · ${status}</b>
       <p>Moral <b class="${moraleCls}">${Math.round(e.morale)}</b> · Hız ${stars(e.speed - 0.7, 0.6)} · Güler yüz ${stars(e.smile, 1)} · Güvenilirlik ${relTxt}${e.wage < e.expect ? ` · <span class="t-warn">${fmt(e.expect)} istiyor</span>` : ''}</p>
       <div class="actions" style="justify-content:flex-start">${roleBtns}</div>
-      <p>${ROLE_DESC[e.role]}</p>
+      <p>${ROLE_DESC[e.role]} Gün içinde de elemana dokunup görevini anında değiştirebilirsin.</p>
       <div class="actions" style="justify-content:flex-start">
         <button class="btn ghost" type="button" data-act="raise" data-e="${n}">Zam ver +%15</button>
         <button class="btn ghost" type="button" data-act="dayoff" data-e="${n}" ${e.dayOff ? 'disabled' : ''}>${e.dayOff ? 'Yarın izinli' : 'Yarın izin ver'}</button>
