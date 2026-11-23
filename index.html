@@ -45,6 +45,7 @@ body{height:100%;margin:0;background:var(--chrome);color:var(--on-chrome);font-f
 .stat b.neg{color:#ff9c8c}
 .repstat{font:inherit;color:inherit;text-align:left;cursor:pointer}
 .lvrow{display:flex;align-items:center;gap:5px}.lvrow em{font-style:normal;font-size:9.5px;font-weight:700;color:#8fd3a0;white-space:nowrap}.lvrow .repbar{flex:1}
+#hTier{letter-spacing:.02em;font-size:9.5px}
 .repbar{display:block;height:4px;border-radius:2px;background:var(--chrome-line);overflow:hidden}
 .repbar i{display:block;height:100%;width:50%;background:var(--tag);transition:width .3s}
 .ctrls{display:flex;gap:5px}
@@ -242,7 +243,7 @@ const mulTxt = x => '×' + x.toFixed(2).replace(/0$/, '').replace('.', ',');
 /* ---------- Durum ---------- */
 const N = PRODUCTS.length, zeros = () => PRODUCTS.map(() => 0);
 const freshStats = rep => ({ visitors: 0, buyers: 0, angry: 0, missed: 0, expensive: 0, revenue: 0, cogs: 0, fees: 0, spent: 0,
-  rent: 0, upkeep: 0, spoiled: 0, wage: 0, empWork: 0, pkDone: 0, pkRevenue: 0, pkLate: 0, pkMissing: 0, overnight: 0, ask: { manav: 0, sark: 0 }, repWhy: {}, loanPaid: 0, repStart: rep });
+  rent: 0, upkeep: 0, spoiled: 0, thieves: 0, caught: 0, stolen: 0, stolenValue: 0, wrong: 0, wage: 0, empWork: 0, pkDone: 0, pkRevenue: 0, pkLate: 0, pkMissing: 0, overnight: 0, ask: { manav: 0, sark: 0 }, repWhy: {}, loanPaid: 0, repStart: rep });
 function newGame() {
   return {
     v: 2, seed: (Date.now() & 0x7fffffff) || 1, phase: 'intro', day: 1, minute: OPEN, closed: false,
@@ -278,7 +279,8 @@ const TIERS = [
 ];
 const tierIdx = (r = S.rep) => { let k = 0; TIERS.forEach((t, i) => { if (r >= t.min) k = i; }); return k; };
 const tier = () => TIERS[tierIdx()];
-const REP_WHY = { servis: 'Hızlı ve güler yüzlü servis', ucuz: 'Ucuz fiyat', bos: 'Boş raf', pahali: 'Pahalı bulunan ürün', sabir: 'Beklemekten bıkan müşteri', yok: 'Satmadığın ürünü soran', eleman: 'Elemanın tavrı', kredi: 'Ödenmeyen kredi taksiti', paket: 'Zamanında paket servis', paketgec: 'Geciken paket siparişi', paketeksik: 'Eksik giden paket', gece: 'Gece unutulma (ortalamaya dönüş)' };
+const TIER_SHORT = ['Kötü', 'Zayıf', 'Bakkal', 'Sevilen', 'Gözde'];
+const REP_WHY = { servis: 'Hızlı ve güler yüzlü servis', ucuz: 'Ucuz fiyat', bos: 'Boş raf', pahali: 'Pahalı bulunan ürün', sabir: 'Beklemekten bıkan müşteri', yok: 'Satmadığın ürünü soran', eleman: 'Elemanın tavrı', kredi: 'Ödenmeyen kredi taksiti', hirsiz: 'Yakalanan hırsız', yanlis: 'Masum müşteriyi suçlama', paket: 'Zamanında paket servis', paketgec: 'Geciken paket siparişi', paketeksik: 'Eksik giden paket', gece: 'Gece unutulma (ortalamaya dönüş)' };
 function addRep(d, why) {
   const before = tierIdx();
   S.rep = clamp(S.rep + d, 0, 100);
@@ -370,7 +372,8 @@ function updatePlayer(dt) {
 }
 
 /* ---------- Müşteri ---------- */
-function spawnCustomer() {
+function spawnCustomer(opt = {}) {
+  if (opt.thief) return spawnThief(opt);
   const r = rng();
   let n = r < 0.4 ? 1 : r < 0.8 ? 2 : 3;
   if (rng() < extraItemChance(S.day)) n++;
@@ -390,14 +393,89 @@ function spawnCustomer() {
     patience: 0, maxPatience: 0, scanT: 0, serving: false, gone: false, paidItems: 0,
     color: CUST_COLORS[Math.floor(rng() * CUST_COLORS.length)],
     skin: SKINS[Math.floor(rng() * SKINS.length)], hair: HAIRS[Math.floor(rng() * HAIRS.length)], pants: PANTS[Math.floor(rng() * PANTS.length)] };
+  if (S.day >= 8 && rng() < (S.day >= 10 ? 0.12 : 0.06)) dressBlack(c); // masum ama siyah giyen müşteri
   S.customers.push(c);
   S.stats.visitors++;
   sfx('door', 1.5);
   nextStop(c);
 }
+/* ---------- Hırsız ---------- */
+const BLACK = '#1d1d22';
+function dressBlack(c) { c.color = BLACK; c.hair = BLACK; c.pants = '#26262c'; c.hood = true; }
+function thiefPlan(d) {
+  // gün → o gün gelecek hırsızlar: { at: dakika, black: siyah kapüşonlu mu }
+  if (d < 4) return [];
+  const at = () => OPEN + 60 + Math.floor(rng() * (CLOSE - OPEN - 150));
+  if (d === 4) return [{ at: 600 + Math.floor(rng() * 90), black: true, tutorial: true }];
+  let n = 1, pBlack = 0.85;
+  if (d >= 10) { n = rng() < 0.5 ? 1 : 2; pBlack = 0.3; }
+  if (d >= 15) { n = 2 + (rng() < 0.4 ? 1 : 0); pBlack = 0.15; }
+  const plan = [];
+  for (let k = 0; k < n; k++) plan.push({ at: at(), black: rng() < pBlack });
+  if (d >= 15 && rng() < 0.3) { const t = plan[0]; plan.push({ at: t.at + 1, black: false }); } // iki kişilik ekip
+  return plan.sort((a, b) => a.at - b.at);
+}
+function spawnThief(opt) {
+  const pool = PRODUCTS.map((p, i) => i).filter(i => i < 9 && unlocked(i)).sort((a, b) => PRODUCTS[b].market - PRODUCTS[a].market).slice(0, 5);
+  const n = 1 + (rng() < 0.5 ? 1 : 0), list = [];
+  while (list.length < n && pool.length) list.push(pool.splice(Math.floor(rng() * pool.length), 1)[0]);
+  list.sort((a, b) => a - b);
+  const c = { id: S.nextId++, x: SPAWN.x, y: SPAWN.y, path: [], stops: list.map(i => ({ t: 'shelf', i })), si: 0, basket: [], state: 'toShelf', t: 0,
+    patience: 0, maxPatience: 0, scanT: 0, serving: false, gone: false, paidItems: 0, thief: true,
+    color: CUST_COLORS[Math.floor(rng() * CUST_COLORS.length)],
+    skin: SKINS[Math.floor(rng() * SKINS.length)], hair: HAIRS[Math.floor(rng() * HAIRS.length)], pants: PANTS[Math.floor(rng() * PANTS.length)] };
+  if (opt.black) dressBlack(c);
+  S.customers.push(c);
+  S.stats.visitors++; S.stats.thieves = (S.stats.thieves || 0) + 1;
+  sfx('door', 1.5);
+  if (opt.tutorial) toast('Siyah kapüşonlu biri girdi. Hırsız olabilir! Ödemeden çıkmadan önce ona dokun, sonra DUR! de.');
+  nextStop(c);
+}
+function selTick() { if (S.sel && (S.minute > S.sel.until || !S.customers.some(c => c.id === S.sel.id))) S.sel = null; }
+function thiefTick() {
+  selTick();
+  if (S.closed || !S.thiefPlan) return;
+  while (S.thiefPlan.length && S.thiefPlan[0].at <= S.minute) spawnCustomer({ thief: true, ...S.thiefPlan.shift() });
+}
+function accuse(c) {
+  S.sel = null;
+  if (!c || c.gone || c.caught) return;
+  c.caught = true;
+  if (c.thief) {
+    const back = c.basket.length;
+    for (const it of c.basket) S.shelves[it.i] = Math.min(capOf(it.i), S.shelves[it.i] + 1);
+    c.basket = [];
+    S.stats.caught = (S.stats.caught || 0) + 1;
+    addRep(3, 'hirsiz'); addXP(10);
+    sfx('goal', 0.3);
+    bubble(c.x, c.y, 'Yakalandım...', 'warn');
+    toast(back ? `Hırsızı yakaladın! ${back} ürün rafa geri döndü.` : 'Hırsızı daha bir şey almadan yakaladın!');
+    S.queue = S.queue.filter(id => id !== c.id);
+    leave(c);
+  } else {
+    S.stats.wrong = (S.stats.wrong || 0) + 1;
+    addRep(-6, 'yanlis');
+    sfx('angry', 0.3);
+    bubble(c.x, c.y, 'Ben hırsız değilim!', 'bad');
+    toast('Masum bir müşteriyi suçladın. Mahallede lafı yayılacak.');
+    S.queue = S.queue.filter(id => id !== c.id);
+    S.queue2 = (S.queue2 || []).filter(id => id !== c.id);
+    S.sarkQueue = S.sarkQueue.filter(id => id !== c.id);
+    for (const it of c.basket) S.depot[it.i]++;
+    c.basket = [];
+    leave(c);
+  }
+}
+function thiefEscaped(c) {
+  if (!c.basket.length) return;
+  const val = c.basket.reduce((a, b) => a + b.price, 0);
+  S.stats.stolen = (S.stats.stolen || 0) + c.basket.length; S.stats.stolenValue = (S.stats.stolenValue || 0) + val;
+  sfx('fee');
+  toast(`Biri ödemeden çıktı: ${c.basket.map(b => PRODUCTS[b.i].name).join(', ')} (${fmt(val)}).`);
+}
 function setPatience(c) { c.maxPatience = T.patience * patienceMult(S.day) * tier().pat * (0.8 + rng() * 0.4); c.patience = c.maxPatience; c.scanT = 0; c.serving = false; }
 function nextStop(c) {
-  if (c.si >= c.stops.length) { if (c.basket.length) joinQueue(c); else leave(c); return; }
+  if (c.si >= c.stops.length) { if (c.basket.length && !c.thief) joinQueue(c); else leave(c); return; }
   const st = c.stops[c.si];
   if (st.t === 'sark' && S.up.sark) {
     S.sarkQueue.push(c.id); c.state = 'sarkq'; setPatience(c);
@@ -410,6 +488,7 @@ function nextStop(c) {
 }
 function tryBuy(c, i) {
   const pr = PRODUCTS[i];
+  if (c.thief) { if (S.shelves[i] > 0) { S.shelves[i]--; c.basket.push({ i, price: S.prices[i] }); } return; }
   if (!unlocked(i)) { S.stats.ask[pr.dept]++; addRep(-0.15, 'yok'); bubble(c.x, c.y, pr.name + ' yok mu?', 'warn'); return; }
   if (S.shelves[i] <= 0) { S.stats.missed++; sfx('missed', 0.4); addRep(-0.4, 'bos'); bubble(c.x, c.y, pr.name + ' bitmiş!', 'bad'); return; }
   if (rng() < buyChance(i)) {
@@ -471,13 +550,13 @@ function updateCustomers(dt) {
     if (c.state === 'toShelf' && arrived) { c.state = 'browse'; c.t = 0; }
     else if (c.state === 'browse') {
       c.t += dt;
-      if (c.t >= BROWSE_TIME) { const st = c.stops[c.si]; if (st.t === 'shelf') tryBuy(c, st.i); else st.items.forEach(i => tryBuy(c, i)); c.si++; nextStop(c); }
+      if (c.t >= BROWSE_TIME * (c.thief ? 1.8 : 1)) { const st = c.stops[c.si]; if (st.t === 'shelf') tryBuy(c, st.i); else st.items.forEach(i => tryBuy(c, i)); c.si++; nextStop(c); }
     } else if (c.state === 'queue' || c.state === 'sarkq') {
       const q = c.state === 'queue' ? qArr(c.q || 0) : S.sarkQueue, spotFn = c.state === 'queue' ? qSpot(c.q || 0) : sarkSpot;
       const spot = spotFn(q.indexOf(c.id));
       if (arrived && (Math.abs(c.x - spot.x) > 1 || Math.abs(c.y - spot.y) > 1)) c.path = route(c, spot);
       if (!c.serving) { c.patience -= dt; if (c.patience <= 0) abandon(c); }
-    } else if (c.state === 'leave' && arrived) c.gone = true;
+    } else if (c.state === 'leave' && arrived) { if (c.thief && !c.caught) thiefEscaped(c); c.gone = true; }
   }
   S.customers = S.customers.filter(c => !c.gone);
 }
@@ -1022,6 +1101,7 @@ function step(dt) {
     }
   }
   updateCars(dt);
+  thiefTick();
   pkSpawn(dt, hourSec);
   pkUpdate(dt);
   updateDeliveries(dt);
@@ -1077,6 +1157,7 @@ function openStore() {
   S.stats = freshStats(S.rep);
   S.stats.spent = total;
   S.boughtToday = [];
+  S.thiefPlan = thiefPlan(S.day); S.sel = null;
   if (total > 0) S.deliveries.push({ units: S.orders.map((k, i) => (unlocked(i) ? k * PRODUCTS[i].caseSize : 0)), eta: 570 + Math.floor(rng() * 120), status: 'coming', wait: 0, rush: false });
   S.orders = zeros();
   const quit = emps().filter(e => e.quitting);
@@ -1128,9 +1209,25 @@ function buyUpgrade(k) {
 }
 
 /* ---------- Dokunma ---------- */
+function custAt(x, y) {
+  let best = null, bd = 1e9;
+  for (const c of S.customers) {
+    if ((c.state === 'leave' && c.caught) || c.state === 'queue' || c.state === 'sarkq') continue; // kuyruktaki zaten ödüyor; kasa dokunuşuyla karışmasın
+    if (Math.abs(x - c.x) <= 8 && y >= c.y - 20 && y <= c.y + 9) { const d = Math.hypot(x - c.x, y - c.y + 6); if (d < bd) { bd = d; best = c; } }
+  }
+  return best;
+}
+const stopBtn = c => ({ x: c.x - 18, y: c.y - 44, w: 36, h: 16 });
 function handleTap(x, y) {
   if (S.phase !== 'day' || modal) return;
   S.fx.push({ x, y, t: 0 });
+  if (S.sel) {
+    const c = S.customers.find(k => k.id === S.sel.id), b = c && stopBtn(c);
+    if (b && x >= b.x - 4 && x <= b.x + b.w + 4 && y >= b.y - 4 && y <= b.y + b.h + 4) { accuse(c); return; }
+    S.sel = null;
+  }
+  const cu = custAt(x, y);
+  if (cu) { S.sel = { id: cu.id, until: S.minute + 8 }; return; }
   if (y < 104 && x > 268) {
     if (waitingTruck()) assign({ type: 'sign', t: 0 }, SIGN_PT);
     else toast('Kapıda kamyon yok. Sabah siparişi 09:30–11:30 arası gelir.');
@@ -1386,10 +1483,8 @@ function draw(now) {
     const cell = vitrinCell(i), q = S.shelves[i], cap = capOf(i), p = PRODUCTS[i];
     const fh = cell.h * q / cap;
     c.globalAlpha = 0.85; c.fillStyle = p.color; c.fillRect(cell.x, cell.y + cell.h - fh, cell.w, fh); c.globalAlpha = 1;
-    if (q > 0) drawIcon(c, i, cell.x + cell.w / 2, cell.y + cell.h - Math.min(fh, cell.h) / 2, 13);
-    if (q === 0) { c.strokeStyle = '#c4473a'; c.lineWidth = 2; c.strokeRect(cell.x, cell.y, cell.w, cell.h); }
-    c.save(); c.translate(cell.x + cell.w / 2 + 3, cell.y + cell.h / 2); c.rotate(-Math.PI / 2);
-    c.font = '700 8px ' + FONT; outlined(c, p.name, 0, 0); c.restore();
+    if (q > 0) { drawIcon(c, i, cell.x + cell.w / 2, cell.y + cell.h / 2 - 2, 22); c.font = '700 9px ' + FONT; c.textAlign = 'center'; outlined(c, String(q), cell.x + cell.w / 2, cell.y + cell.h - 2); }
+    else { c.strokeStyle = '#c4473a'; c.lineWidth = 2; c.strokeRect(cell.x, cell.y, cell.w, cell.h); c.font = '700 8px ' + FONT; c.textAlign = 'center'; outlined(c, 'BOŞ', cell.x + cell.w / 2, cell.y + cell.h / 2 + 3); }
   }
 
   // yoldan geçenler
@@ -1444,8 +1539,11 @@ function draw(now) {
       continue;
     }
     const unpaid = cu.basket.length;
+    if (S.sel && S.sel.id === cu.id) { c.strokeStyle = '#f0c032'; c.lineWidth = 2; c.beginPath(); c.ellipse(cu.x, cu.y + 8, 10, 4, 0, 0, Math.PI * 2); c.stroke(); }
     drawPerson(c, cu.x, cu.y, { hair: cu.hair || '#2b1d16', skin: cu.skin || '#e0ac7e', shirt: cu.color, pants: cu.pants || '#2f3e5c',
       frame: walkFrame(cu, now, cu.id), bags: unpaid || cu.paidItems || 0, paid: !unpaid && cu.paidItems > 0 });
+    if (cu.hood) { c.fillStyle = BLACK; c.fillRect(Math.round(cu.x - 7) + 2, Math.round(cu.y - 16) - 2, 10, 4); }
+    if (S.sel && S.sel.id === cu.id) { const b = stopBtn(cu); c.fillStyle = '#c4473a'; rr(c, b.x, b.y, b.w, b.h, 4); c.fill(); c.fillStyle = '#fff'; c.font = '700 9px ' + FONT; c.textAlign = 'center'; c.fillText('DUR!', b.x + b.w / 2, b.y + 11.5); }
     if (cu.state === 'queue' || cu.state === 'sarkq') {
       const f = cu.patience / cu.maxPatience;
       bar(c, cu.x - 10, cu.y - 22, 20, f, f > 0.5 ? '#2e8b57' : f > 0.25 ? '#d99a1e' : '#c4473a');
@@ -1498,7 +1596,7 @@ function updateHud(now, force) {
   $('hXpFill').style.width = (clamp(S.xp / xpNeed(S.level), 0, 1) * 100) + '%';
   $('hClock').textContent = hhmm(Math.min(S.minute, 1439));
   $('hRep').textContent = Math.round(S.rep) + (S.phase === 'day' ? '' : '');
-  $('hTier').textContent = tier().name;
+  $('hTier').textContent = TIER_SHORT[tierIdx()];
   $('hRepFill').style.width = S.rep + '%';
   $('bRush').disabled = S.phase !== 'day' || S.closed || S.minute > RUSH_LAST;
   const chips = [];
@@ -1552,6 +1650,7 @@ function introHtml() {
     <li><i class="lg shelf"></i><span><b>Rafa dokun:</b> depoya gider, koliyi alır, rafı doldurursun.</span></li>
     <li><i class="lg reg"></i><span><b>Kasaya dokun:</b> kasada durur, sıradakinin hesabını alırsın. Kasada değilsen kimse ödeyemez.</span></li>
     <li><i class="lg cust"></i><span><b>Müşterinin sabrı biter.</b> Başının üstündeki çubuk kızarınca gider. Aldığı ürünler beyaz poşette durur, ödeyince poşet yeşile döner. Raf boşsa, fiyat pahalıysa ya da aradığını satmıyorsan itibar düşer.</span></li>
+    <li><i class="lg cust" style="background:#1d1d22"></i><span><b>4. günden sonra hırsızlar gelir.</b> Hırsız kasaya uğramaz, elinde beyaz (ödenmemiş) poşetle kapıya yürür. Şüphelendiğin kişiye dokun, sonra DUR! de. Masum birini durdurursan itibarın sert düşer.</span></li>
     <li><i class="lg truck"></i><span><b>Kamyon arka kapıya gelince ona dokun ve imzala.</b> Geç kalırsan şoför ${fmt(FEE)} keser, 1 saat sonra gelir.</span></li>
     <li><i class="lg tag"></i><span><b>Her gün 3 hedefin olur.</b> Tamamlarsan para ve puan kazanırsın; puanla mahalle seviyen yükselir, ödüller açılır. <b>Büyümek zorundasın.</b> 3. günden sonra sebze-meyve, 5. günden sonra peynir ve sucuk soranlar çıkar. Manav ve şarküteriyi sabah ekranından açarsın.</span></li>
   </ul>
@@ -1563,6 +1662,7 @@ function newsHtml() {
   items.push(`<b>Bugün:</b> müşteri ${mulTxt(dayMult(d))}, sabır ${pct(patienceMult(d))}, kira ${fmt(rentFor(d))}${upkeep() ? ', bölüm giderleri ' + fmt(upkeep()) : ''}.`);
   if (d % 3 === 1 && d > 1) items.push('Ev sahibi kirayı artırdı.');
   const r = S.report;
+  if (d === 4) items.push('<b>Dikkat:</b> mahallede hırsızlık olayları başladı. Bugün dükkâna şüpheli biri gelebilir.');
   if (!S.up.manav && d >= 3) items.push(r && r.ask.manav ? `Dün <b>${r.ask.manav} kez</b> sebze-meyve soruldu. Manavın yok.` : 'Mahallede sebze-meyve soranlar başladı.');
   if (!S.up.sark && d >= 5) items.push(r && r.ask.sark ? `Dün <b>${r.ask.sark} kez</b> peynir, zeytin, sucuk soruldu. Şarküterin yok.` : 'Peynir, zeytin soranlar başladı.');
   emps().forEach(e => { if (e.news) items.push(e.news); });
@@ -1667,6 +1767,8 @@ function reportHtml() {
     [r.angry * 3, `${r.angry} müşteri beklemekten bıkıp gitti. Kuyruk uzarken kasaya ya da tezgâha dön.`],
     [r.expensive, `${r.expensive} kez fiyat pahalı bulundu. Fiyatı piyasaya yaklaştırmayı dene.`],
     [r.spoiled / 30, `Gece ${fmt(r.spoiled)} değerinde sebze-meyve çürüdü. Manavda az ve sık sipariş ver.`],
+    [(r.stolenValue || 0) / 25, `Bugün ${fmt(r.stolenValue || 0)} değerinde mal çalındı. Kasaya uğramadan kapıya yürüyen, elinde beyaz (ödenmemiş) poşet olan birini görürsen ona dokun ve DUR! de.`],
+    [(r.wrong || 0) * 8, `Masum bir müşteriyi suçladın; itibarın sert düştü. Emin olmadan durdurma: hırsız kasaya gitmez, elinde beyaz poşetle kapıya yürür.`],
     [r.fees / 40, `Şoförü bekletip ${fmt(r.fees)} ücret ödedin.`],
   ].filter(l => l[0] > 0).sort((a, b) => b[0] - a[0]);
   const lesson = leaks.length ? leaks[0][1] : 'Temiz bir gün. Yarın müşteri daha da artacak.';
@@ -1691,6 +1793,9 @@ function reportHtml() {
     <dt>Sabrı tükenip giden</dt><dd>${r.angry}</dd>
     <dt>Raf boş olduğu için satılamayan</dt><dd>${r.missed}</dd>
     <dt>Satmadığın ürünü soran</dt><dd>${r.ask.manav + r.ask.sark}</dd>
+    ${r.thieves ? `<dt>Hırsız: yakalanan / gelen</dt><dd>${r.caught || 0} / ${r.thieves}</dd>` : ''}
+    ${r.stolenValue ? `<dt>Çalınan mal</dt><dd class="t-bad">${r.stolen} ürün · ${fmt(r.stolenValue)}</dd>` : ''}
+    ${r.wrong ? `<dt>Yanlış suçlama</dt><dd class="t-bad">${r.wrong}</dd>` : ''}
     <dt>Pahalı bulunup alınmayan</dt><dd>${r.expensive}</dd>
     <dt>İtibar</dt><dd>${Math.round(r.repStart)} → ${Math.round(r.repEnd)} · ${TIERS[tierIdx(r.repEnd)].name}</dd>
     ${Object.entries(r.repWhy || {}).filter(([, v]) => Math.abs(v) >= 0.5).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).map(([k, v]) => `<dt style="padding-left:12px">${REP_WHY[k]}</dt><dd class="${v > 0 ? 't-good' : 't-bad'}">${v > 0 ? '+' : '−'}${Math.abs(v).toFixed(1).replace('.', ',')}</dd>`).join('')}

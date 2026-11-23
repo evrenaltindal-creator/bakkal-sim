@@ -6,17 +6,21 @@
 | --- | --- | --- |
 | – | Müzik (sabah, gün içi, akşam) | ✅ |
 | – | 12 ürün simgesi, raflar, manav, vitrin, kasa, depo, zemin | ✅ |
-| – | Uygulama simgesi (orijinal mi yakın kırpılmış mı: karar bekliyor) | 🟡 |
+| – | Uygulama simgesi: `icon/app-icon-1024.png` (orijinal) | ✅ |
 | 1 | Depoya taşıma, internetsiz çalışma, denge panelini gizleme | ✅ |
 | 2 | Ses efektleri (kasa, kapı zili, kamyon kornası, motorcu, poşet, kızgın müşteri, seviye) | ✅ |
-| 3 | Hırsız: 4. gün ilk (siyah kapüşonlu, öğretici), 5–9 günde 1, 10+ normal kıyafetli ve davranışından anlaşılan, 15+ ara sıra iki kişilik ekip. Yanlış kişiyi durdurmak itibarı sert düşürür | ⬜ |
+| 3 | Hırsız: 4. gün ilk (siyah kapüşonlu, öğretici), 5–9 günde 1, 10+ normal kıyafetli ve davranışından anlaşılan, 15+ ara sıra iki kişilik ekip. Yanlış kişiyi durdurmak itibarı sert düşürür | ✅ |
 | 4 | Hedefler ve mahalle seviyesi (günde 3 hedef, 10 seviye, para ve kalıcı avantaj ödülleri) | ✅ |
-| 5 | Yeni şube: her şey açılınca başka mahallede ikinci dükkân (oyun sonu) | ⬜ |
-| 6 | İsim (aday: "Bakkal Days") + 7 dil: tr, en, de, es, pt-BR, ru, ar | ⬜ |
+| 5 | Oyun sonu: belirli bir eşiğe (ör. 30.000 ₺ ve itibar 100) ulaşınca oyuncuya seçenek: yeni şube aç ya da yeniden başla (kalıcı avantajla) | ⬜ |
+| 6 | İsim: **Little Bakkal** + 7 dil: tr, en, de, es, pt-BR, ru, ar | ⬜ |
 | 7 | iOS paketi (WKWebView/Capacitor, internetsiz) → TestFlight, 5–10 kişi bir hafta | ⬜ |
 | 8 | Düzeltmeler → gizlilik sayfası, ekran görüntüleri → App Store | ⬜ |
 
 ## Sonrası
+
+Little Bakkal kendi başına bitmiş, satılan bir oyun olacak. Büyük vizyon (bakkal → zincir → market → holding,
+bakkal ve depo oyuncularının ortak pazarda buluşması) ayrı ve daha büyük bir proje olarak, aynı mekaniklerle 2.5D yapılacak.
+
 
 - **Faz 2:** Android / Google Play (aynı kod)
 - **Faz 3:** Unity ile 2.5D sürüm (Steam + mobil), aynı mekaniklerle

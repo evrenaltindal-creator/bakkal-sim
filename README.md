@@ -1,4 +1,4 @@
-# Bakkal Sim (çalışma adı: Mahalle Bakkalı)
+# Little Bakkal
 
 2D piksel sanat bir mahalle bakkalı işletme oyunu. Tek başına küçük bir bakkalla başlarsın;
 kamyonu karşılar, rafları dizer, kasada hesap alırsın. Aynı anda tek yerde olabildiğin için
@@ -38,7 +38,7 @@ Playwright ve Chromium kurulu olmalıdır.
 | `art/source/` | Google Flow'dan gelen orijinal görseller (kaynak) |
 | `music/` | Sabah, gün içi ve akşam müzikleri (Google Lyria) |
 | `fonts/` | Rubik ve Bungee (SIL Open Font License) |
-| `icon/` | Uygulama simgesi adayları (1024×1024) |
+| `icon/` | Uygulama simgesi (1024×1024) |
 | `tool/key_art.py` | Görselin yeşil/mor zeminini silen, kırpıp boyutlandıran betik |
 | `tests/smoke.js` | Duman testi |
 
