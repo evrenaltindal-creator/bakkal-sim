@@ -1,0 +1,142 @@
+name: iOS TestFlight
+
+# Elle çalıştırılır (Actions → iOS TestFlight → Run workflow). Oyunu internetsiz bir iPhone
+# uygulamasına paketler, App Store imzasıyla imzalar ve TestFlight'a yükler.
+on:
+  workflow_dispatch:
+    inputs:
+      app_store_release:
+        description: "App Store'a gönderilebilir derleme (yalnızca dahili TestFlight işareti olmadan)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bakkal-ios-testflight
+  cancel-in-progress: false
+
+jobs:
+  testflight:
+    name: Signed IPA to TestFlight
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      BAKKAL_BUNDLE_ID: com.vardiox.littlebakkal
+      APP_STORE_APPLE_ID: ${{ vars.APP_STORE_APPLE_ID }}
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_IDENTIFIER }}
+      APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+      CERTIFICATE_PRIVATE_KEY: ${{ secrets.CERTIFICATE_PRIVATE_KEY }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Validate release configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in APP_STORE_APPLE_ID APP_STORE_CONNECT_ISSUER_ID \
+            APP_STORE_CONNECT_KEY_IDENTIFIER APP_STORE_CONNECT_PRIVATE_KEY CERTIFICATE_PRIVATE_KEY; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "Missing GitHub value: ${name} (Settings → Secrets and variables → Actions)" >&2
+              exit 1
+            fi
+          done
+          grep -q "PRODUCT_BUNDLE_IDENTIFIER: ${BAKKAL_BUNDLE_ID}\$" ios/project.yml
+
+      - name: Check translations are built
+        run: |
+          python3 tool/build_i18n.py
+          git diff --exit-code -- i18n
+
+      - name: Select Xcode 26.6
+        run: sudo xcode-select --switch /Applications/Xcode_26.6.app
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install tools
+        run: |
+          python -m pip install codemagic-cli-tools==0.67.0
+          brew install xcodegen
+
+      - name: Fetch App Store signing files
+        run: |
+          app-store-connect fetch-signing-files \
+            "$BAKKAL_BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --strict-match-identifier \
+            --create
+
+      - name: Determine next build number
+        shell: bash
+        run: |
+          set -euo pipefail
+          latest="$(app-store-connect get-latest-build-number \
+            "$APP_STORE_APPLE_ID" --all-versions --platform IOS || true)"
+          [[ "$latest" =~ ^[0-9]+$ ]] || latest=0
+          next=$((latest + 1))
+          if (( GITHUB_RUN_NUMBER > next )); then next="$GITHUB_RUN_NUMBER"; fi
+          echo "BAKKAL_BUILD_NUMBER=$next" >> "$GITHUB_ENV"
+
+      - name: Generate Xcode project with the game inside
+        run: |
+          ios/build_www.sh
+          cd ios && xcodegen generate
+
+      - name: Configure keychain and signing
+        env:
+          APP_STORE_RELEASE: ${{ inputs.app_store_release }}
+        run: |
+          export_options='{"testFlightInternalTestingOnly": true}'
+          if [[ "$APP_STORE_RELEASE" == "true" ]]; then export_options='{}'; fi
+          keychain initialize
+          keychain add-certificates
+          xcode-project use-profiles \
+            --project ios/LittleBakkal.xcodeproj \
+            --archive-method app-store \
+            --custom-export-options="$export_options"
+
+      - name: Build signed IPA
+        run: |
+          xcode-project build-ipa \
+            --project ios/LittleBakkal.xcodeproj \
+            --scheme LittleBakkal
+
+      - name: Verify IPA
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          ipas=(build/ios/ipa/*.ipa)
+          (( ${#ipas[@]} == 1 )) || { echo "Expected one IPA, found ${#ipas[@]}" >&2; exit 1; }
+          dir="$(mktemp -d)"
+          unzip -q "${ipas[0]}" -d "$dir"
+          app="$dir/Payload/LittleBakkal.app"
+          for f in www/index.html www/i18n/en.js www/i18n/ar.js www/music/gun.mp3 www/art/scene/zemin.png; do
+            test -f "$app/$f" || { echo "Missing in app: $f" >&2; exit 1; }
+          done
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$app/Info.plist")" = "$BAKKAL_BUILD_NUMBER"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app/Info.plist")" = "$BAKKAL_BUNDLE_ID"
+
+      - name: Upload to TestFlight
+        run: |
+          app-store-connect publish \
+            --path 'build/ios/ipa/*.ipa' \
+            --locale tr \
+            --whats-new @file:TESTFLIGHT_NOTES.txt \
+            --max-find-build-wait 15 \
+            --max-build-processing-wait 60
+
+      - name: Upload IPA artifact
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: little-bakkal-ipa-${{ github.run_number }}
+          path: build/ios/ipa/*.ipa
+          if-no-files-found: ignore
+          retention-days: 14

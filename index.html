@@ -2266,6 +2266,14 @@ function setMusicBtn() {
   b.style.opacity = musicOn ? '1' : '0.45';
 }
 document.addEventListener('pointerdown', () => { musicUnlocked = true; }, { capture: true });
+// iPhone: oyuncunun kendi müziği (Spotify vb.) çalarken oyun onu durdurmasın, üstüne çalsın.
+try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch (e) {}
+// Uygulama arka plana geçince kaydet ve gün içindeysen oyunu durdur.
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) return;
+  saveGame();
+  if (S.phase === 'day' && !paused && !modal) $('bPause').click();
+});
 document.addEventListener('keydown', () => { musicUnlocked = true; }, { capture: true });
 
 

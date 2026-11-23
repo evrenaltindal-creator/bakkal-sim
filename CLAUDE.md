@@ -15,6 +15,13 @@ Kullanıcıyla Türkçe konuş. Oyun 7 dildedir: tr (kaynak), en, de, es, pt (Br
   `S.day` değil dükkânın yaşı `sAge()` kullanılır (yeni şube sıfırdan büyür). Sen yokken şube `simBranch` ile
   sayılarla hesaplanır.
 
+- **iPhone uygulaması** `ios/` altındadır: Xcode projesi `ios/project.yml`'dan XcodeGen ile üretilir (depoya
+  girmez). Oyun dosyaları `ios/build_www.sh` ile `ios/www`'ye kopyalanıp uygulamaya gömülür ve WKWebView'da
+  `bakkal://game/` adresinden açılır (`GameViewController.swift`, internet yok). Ses oturumu `ambient`'tir.
+  Oyuna yeni bir klasör/dosya türü eklersen `build_www.sh`'a ve gerekirse MIME tablosuna ekle.
+  Derleme ve TestFlight yüklemesi `.github/workflows/ios-testflight.yml` ile (elle başlatılır). Paket kimliği
+  `com.vardiox.littlebakkal`; değiştirilirse iş akışı ve App Store Connect kaydı da değişir.
+
 ## Kurallar
 
 - **Kayıt uyumu:** oyun `localStorage` içinde `bakkal.save.v2` anahtarıyla saklanır ve her
