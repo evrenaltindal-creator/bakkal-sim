@@ -1,0 +1,515 @@
+0	Bread
+1	Milk
+2	Eggs
+3	Pasta
+4	Tea
+5	Chocolate
+6	Tomatoes
+7	Potatoes
+8	Apples
+9	Cheese
+10	Olives
+11	Sucuk
+12	cheese, olives, sucuk
+13	Produce section
+14	Tomatoes, potatoes, apples. Customers serve themselves, but 20% of the produce rots every night.
+15	Deli counter
+16	Cheese, olives, sucuk. Customers wait at the counter; you have to step behind it to weigh and serve.
+17	Big shelves
+18	Dry goods shelves hold 50% more, so you restock less often.
+19	Second register
+20	A second checkout counter. Customers pick the shorter line. You or a staff member must stand there; nobody queues at an empty register.
+21	Barcode scanner
+22	Scanning at the register is twice as fast, so the line clears quicker.
+23	Bad name
+24	40% fewer customers
+25	Short patience
+26	The bank won't lend to you
+27	Good workers won't apply
+28	Untrusted
+29	20% fewer customers
+30	They watch prices very closely
+31	Credit limit 2,000 ₺
+32	Neighborhood grocer
+33	Credit limit 4,000 ₺
+34	Beloved grocer
+35	20% more customers
+36	A bit more patient
+37	They buy even at 10% over market price
+38	Credit limit 7,000 ₺
+39	Neighborhood favorite
+40	40% more customers
+41	They buy even at 20% over market price
+42	Wholesaler gives a 5% discount
+43	Credit limit 10,000 ₺
+44	Better job candidates
+45	Bad
+46	Weak
+47	Grocer
+48	Beloved
+49	Favorite
+50	Fast, friendly service
+51	Cheap prices
+52	Empty shelf
+53	Product found too expensive
+54	Customer tired of waiting
+55	Asked for something you don't sell
+56	Staff attitude
+57	Unpaid loan installment
+58	Thief caught
+59	Accused an innocent customer
+60	Delivery on time
+61	Late delivery order
+62	Incomplete delivery
+63	Overnight fading (back toward average)
+64	You're now {0}! {1}
+65	Careful: you're now {0}. {1}
+66	You lost some perks.
+67	{0} is already full.
+68	No {0} in the stockroom. Wait for the truck or place a rush order.
+69	{0} ran out in the stockroom.
+70	Someone in a black hoodie came in. Could be a thief! Tap them before they leave without paying, then tap STOP!
+71	Caught...
+72	You caught the thief! {0} items went back on the shelf.
+73	You caught the thief before they took anything!
+74	I'm not a thief!
+75	You accused an innocent customer. Word will get around.
+76	Someone left without paying: {0} ({1}).
+77	No {0}?
+78	Out of {0}!
+79	Too pricey!
+80	That's it, I'm leaving!
+81	AD SPACE
+82	Register
+83	Register 2
+84	Deli
+85	Shelves
+86	Delivery
+87	Works the main register and takes payments.
+88	Works the second register and takes payments.
+89	Works the deli counter, weighing cheese and sucuk.
+90	Restocks low shelves from the stockroom on their own.
+91	Picks phone orders from the shelves and hands them to the courier at the back door. Only staff can do this.
+92	{0} started work ({1}). You can change their job on the morning screen.
+93	Called in the morning with a fever. Going to the doctor.
+94	Their child got sick at school and they had to pick them up.
+95	Their mother was taken to hospital; they're staying with her.
+96	Their home flooded. Waiting for the plumber.
+97	The bus broke down, and there's an accident in traffic too. They won't make it today.
+98	Forgot to mention their cousin's wedding. They apologized.
+99	Couldn't sleep all night with a toothache; going to the dentist.
+100	Not answering the phone. No reply to messages either.
+101	Overslept. Texted at noon: "Not worth coming in now."
+102	Went to a football match last night and couldn't get up.
+103	A neighbor saw them fishing at the beach this morning.
+104	Texted: "I can't come today, I'm exhausted." Morale is at rock bottom.
+105	Rumor says they went to a job interview at another market.
+106	Sounded worn out on the phone: "I can't keep up with this pace."
+107	{0} has the day off.
+108	You gave them the day off; they're resting today. They'll come back in high spirits tomorrow.
+109	{0} didn't show up today.
+110	{0} wants to quit.
+111	Morale is very low. A raise or a day off might keep them.
+112	Delivery order in: {0}. Deliver by: {1}.
+113	A delivery order was late; the customer canceled.
+114	{0} loan deposited. An installment of {2} will be taken every evening for {1} days.
+115	Loan paid off. You're debt-free.
+116	Loan balance · {0}
+117	An installment of {0} is taken every evening{1}. Pay early and 10% of the remaining debt is waived.
+118	{0} installment(s) unpaid; one more and you go bankrupt
+119	Pay off {0}
+120	The bank won't lend to you
+121	Your reputation is at "{0}". You need at least 20 reputation.
+122	Take a loan · your limit is {0}
+123	Interest {0}%. The installment is taken automatically every evening for {1} days. If there's no cash on a due day, a penalty is added and your reputation drops; miss two in a row and you go bankrupt. Your limit grows with your reputation.
+124	Decrease loan amount
+125	Increase loan amount
+126	You pay {0} in total · {1} per day
+127	Choose an amount
+128	Take the loan
+129	Bank
+130	DAY OFF
+131	DIDN'T SHOW UP
+132	{0} STAFF MISSING
+133	{0} · day {1}
+134	Day off
+135	Today's trouble
+136	Someone else will cover the {0} job today{1}.{2}
+137	; fewer delivery orders today
+138	Not the first time; low reliability.
+139	No wages are paid on a missed day.
+140	OK, open the shop
+141	Reputation · {0} / 100
+142	Reputation is how the neighborhood sees you. It decides how many customers come, how long they wait, how much extra they'll pay and how far the bank trusts you.{0}
+143	{0} points
+144	more and you become "{0}".
+145	· you are here
+146	Normal: no perks, no penalties.
+147	Raises it:
+148	fast checkout, friendly staff, prices below market.
+149	Lowers it:
+150	customers tired of waiting (the worst), empty shelves, high prices, asking for things you don't sell, unpaid loan installments. Reputation drifts back toward average every night; keep working to stay on top.
+151	OK
+152	Rush order arrived! Waiting for a signature at the back door.
+153	The truck is here! Waiting for a signature at the back door.
+154	The driver couldn't wait: {0} waiting fee, the goods will come back in 1 hour.
+155	Unloaded to stockroom
+156	Goods are in the stockroom. Tap a shelf to restock it.
+157	Wholesaler gives a 3% discount
+158	You're known around here: 5% more customers
+159	Another 3% wholesale discount (6% total)
+160	5% more customers (10% total)
+161	Title: Neighborhood legend
+162	New grocer
+163	Familiar face
+164	The neighborhood's grocer
+165	Trusted shopkeeper
+166	Beloved shopkeeper
+167	Star of the street
+168	The district's grocer
+169	Master shopkeeper
+170	Almost a legend
+171	Neighborhood legend
+172	Neighborhood level {0}: {1}! {2}
+173	Make sales to {0} customers
+174	End the day with {0} in sales
+175	No customer leaves tired of waiting
+176	Lose at most {0} sales to empty shelves
+177	Sign for the truck without making it wait
+178	Sell {0} {1}
+179	Deliver {0} delivery orders
+180	Sell {0} items at the deli
+181	Sell {0} items of produce
+182	Raise your reputation by 3 points today
+183	Goal complete: {0}. +{1}
+184	Today's goals
+185	✓ done
+186	✗ missed
+187	at day's end
+188	Reward: {0} · {1} points
+189	Neighborhood level {0} · {1}
+190	{0} / {1} points · Next level: {2}
+191	Level {0} · {1}
+192	✓
+193	Neighborhood level
+194	★{0} shopkeeper stars:
+195	the wholesaler gives {0}% off.
+196	Every sale, delivered order and completed goal earns points. Leveling up unlocks cash rewards and permanent perks.
+197	Levels
+198	YOU'RE A NEIGHBORHOOD LEGEND!
+199	In {0} days you turned a tiny shop into the neighborhood favorite: {1} in the till, reputation {2}, neighborhood level {3}. You've done everything there is to do here.
+200	What would you like to do now?
+201	Start over in a new neighborhood (★{0})
+202	You hand over the shop and start again with a small grocery in another neighborhood. Permanent reward: ★{0} shopkeeper star. {1}% wholesale discount, +{2} and +{3} reputation at the start.
+203	You already have a second branch
+204	Open a second branch · {0}
+205	A second shop in another neighborhood. Each morning you choose where to be; your staff run the other one.
+206	Keep going in this shop
+207	If you keep going, this option stays in Settings; you can move to a new neighborhood any time.
+208	New neighborhood, new shop! Your ★{0} shopkeeper stars come with you.
+209	Downtown
+210	Your first shop.
+211	Student quarter
+212	Busy, but very price-conscious; rent is cheap.
+213	Gated estate
+214	Few but generous customers who pay more; high rent, few thieves.
+215	Bazaar
+216	Very crowded, lots of thieves; high rent.
+217	{0} branch opens tomorrow! In the morning you'll choose which shop to be in.
+218	The fridge broke down. Deli and produce are about to spoil.
+219	Call a repairman
+220	Never mind
+221	A thief broke into the stockroom last night; they may come back this week.
+222	Hire a night guard
+223	Just change the lock
+224	Staff are complaining: "The boss never shows up."
+225	Give a bonus
+226	Ignore it
+227	Health inspection coming: expired product check.
+228	Have the shelves checked
+229	Take your chances
+230	{0}: you were fined 2,000 ₺ at the inspection.
+231	A chain supermarket opened across the street; customers are drifting over.
+232	Run an opening campaign
+233	Wait it out
+234	{0} ({1}) quit. Morale sank while you were away.
+235	Not enough cash for that.
+236	{0}: you didn't decide, so "{1}" happened.
+237	You went in person and fixed it
+238	Today you're at the {0} shop.
+239	Shops
+240	{0} · you're here today
+241	· opens tomorrow
+242	New branch. I suggest going there on day one to set things up and hire at least one cashier.
+243	Yesterday: {0}
+244	nobody at the register, the shop stayed closed
+245	{0} customers, sales {1}, net
+246	no report yet
+247	Reputation {0} · Staff {1}/{2}{3}
+248	· <span class="t-bad">no cashier: no sales unless you go</span>
+249	Crisis solved: {0}.
+250	Go there today{0}
+251	(solves the crisis)
+252	Auto-order: {0}
+253	on
+254	off
+255	While you're away, staff do the work: the cashier sells, the stocker refills shelves from the stockroom, and the deli needs someone at the counter. Auto-order buys what's missing every night from the shared till.
+256	Second branch · {0}
+257	WHICH NEIGHBORHOOD?
+258	The branch opens as a small grocery from scratch: its own shelves, stockroom, reputation, staff and upgrades. The till, neighborhood level and goals are shared. Each morning you choose which shop to be in; your staff run the other one.
+259	Open
+260	Cancel
+261	It's 8 PM, you closed the door. The day ends when the last customers leave.
+262	{0} quit and left.
+263	The shop is open! The truck comes between 9:30 and 11:30.
+264	The shop is open! You didn't order anything today.
+265	Rush order placed; it arrives in about 1 hour.
+266	{0} returned, {1} back in the till.
+267	{0} sold, {1} back in the till.
+268	{0} is open. Orders for the new products were added to the list.
+269	No truck at the door. The morning order comes between 9:30 and 11:30.
+270	Produce is locked. You can unlock it under Upgrades on the morning screen.
+271	The deli is locked. You can unlock it under Upgrades on the morning screen.
+272	{0} is at the deli counter.
+273	{0} is at the second register.
+274	{0} is at the register.
+275	Stockroom. To restock, tap a shelf; you'll carry the goods there yourself.
+276	STOCKROOM
+277	BACK DOOR
+278	ENTRANCE
+279	REGISTER 2
+280	REGISTER
+281	PRODUCE · LOCKED
+282	Morning screen → Upgrades
+283	DELI
+284	EMPTY
+285	{0} branch
+286	STOP!
+287	Day {0}
+288	Lv {0}
+289	Closed, last customers
+290	Truck at the door · {0} s
+291	{0} waiting at the register
+292	{0} waiting at register 2
+293	{0} waiting at the deli
+294	Delivery: {0} orders
+295	Empty: {0}
+296	Running low: {0}
+297	Goals {0}/{1}
+298	You're at the register, no line
+299	A quiet moment
+300	A neighborhood grocery management game
+301	You run a corner shop on your own. You can only be in one place at a time; you decide where to rush. Every day there are more customers, bigger baskets, less patience and higher rent.
+302	You're the one in the green apron.
+303	Tap where you want to go.
+304	Tap a shelf:
+305	you go to the stockroom, grab a box and fill the shelf.
+306	Tap the register:
+307	you stand at the register and ring up the next customer. If you're not there, nobody can pay.
+308	Customers lose patience.
+309	When the bar above their head turns red, they leave. What they pick up goes in a white bag; it turns green once they pay. Empty shelves, high prices or not having what they want hurt your reputation.
+310	From day 4, thieves show up.
+311	A thief skips the register and walks to the door with a white (unpaid) bag. Tap the person you suspect, then tap STOP! Stop an innocent customer and your reputation takes a hard hit.
+312	When the truck reaches the back door, tap it and sign.
+313	If you're late, the driver charges {0} and comes back 1 hour later.
+314	You get 3 goals every day.
+315	Complete them for cash and points; points raise your neighborhood level and unlock rewards.
+316	You have to grow.
+317	From day 3 people ask for produce, from day 5 for cheese and sucuk. You open produce and the deli from the morning screen.
+318	Tap the reputation box at the top to see what reputation changes. You can take a bank loan on the morning screen. If you can't keep up, hire staff on the morning screen; your team grows as you open produce and the deli, and you can add a second register. Change language and sound with the Settings button at the top right.
+319	Start the morning
+320	Today:
+321	customers {0}, patience {1}, rent {2}{3}.
+322	, section costs
+323	The landlord raised the rent.
+324	<b>Careful:</b> thefts have started in the neighborhood. Someone suspicious may come in today.
+325	Yesterday people asked for produce {0} times. You don't have a produce section.
+326	People in the neighborhood have started asking for produce.
+327	Yesterday people asked for cheese, olives or sucuk {0} times. You don't have a deli.
+328	People have started asking for cheese and olives.
+329	If you can't keep up, you can hire someone below.
+330	? (known in {0} days)
+331	wants to quit
+332	off today
+333	at work today
+334	(swaps with {0})
+335	{0} · {1}/day · {2}
+336	Morale
+337	· Speed {0} · Friendliness {1} · Reliability {2}{3}
+338	wants {0}
+339	{0} You can also tap a worker during the day to change their job instantly.
+340	Give a 15% raise
+341	Off tomorrow
+342	Give tomorrow off
+343	Fire
+344	{0} · {1}/day
+345	Speed {0} · Friendliness {1} · Reliability ?
+346	Reliability shows over time.
+347	Hire
+348	Post a new ad ({0})
+349	Hire another worker
+350	Hire a worker
+351	Someone to run the register, stock shelves, handle delivery{0}. Post an ad and three candidates apply. Wages are paid every evening.
+352	or work the deli
+353	Post an ad {0}
+354	Produce
+355	Team is full
+356	Your shop can handle at most {0} workers right now.{1}
+357	Open {0} to hire one more.
+358	Staff · {0}/{1}
+359	Upgrades
+360	· owned
+361	You bought this this morning; you can return it free before opening.
+362	Sell it to get back 60% of its price plus the cost of remaining stock.
+363	Sell it to get back 60% of its price.
+364	Return
+365	Sell
+366	Daily cost {0}.
+367	Selling price
+368	Lower the price of {0}
+369	Raise the price of {0}
+370	· perishable
+371	· at the counter
+372	Shelf {0}/{1} · Stock {2}{3}
+373	Order
+374	Order less {0}
+375	Order more {0}
+376	Case of {0} · {1}
+377	Rush order · 25% pricier · Time {0}
+378	RUSH ORDER
+379	Arrives in about 1 hour. The game is paused while this screen is open.
+380	Morning · day {0}{1}
+381	DAY {0}
+382	The truck brings your order between 9:30 and 11:30.{0}{1}
+383	Yesterday's net {0}, reputation {1}.
+384	A suggested order is ready for your first day.
+385	Orders and prices
+386	Not enough money.
+387	Reduce or clear the order; if needed, return one of the upgrades above. You can also open without ordering and sell what's on the shelves.
+388	Clear order
+389	Place order
+390	Open the shop
+391	market price
+392	{0} pricier
+393	{0} cheaper
+394	Market {0} ·
+395	· buyers {0}
+396	In the till {0}
+397	Left
+398	Not enough money
+399	People asked for produce {0} times, but you have no produce section. Save up and consider opening one.
+400	People asked for cheese, olives or sucuk {0} times, but you have no deli.
+401	The biggest loss was empty shelves: {0} items couldn't be sold because they ran out. Restock before the rush and order more.
+402	{0} customers got tired of waiting and left. Head back to the register or deli when the line grows.
+403	Prices were found too high {0} times. Try moving closer to market price.
+404	{0} worth of produce rotted overnight. Order produce in smaller, more frequent batches.
+405	{0} worth of goods was stolen today. If you see someone walking to the door with a white (unpaid) bag without stopping at the register, tap them and tap STOP!
+406	You accused an innocent customer; your reputation dropped hard. Don't stop anyone unless you're sure: a thief skips the register and heads for the door with a white bag.
+407	You made the driver wait and paid a {0} fee.
+408	A clean day. Tomorrow there'll be even more customers.
+409	End of day · 8 PM
+410	DAY {0} CLOSED
+411	Sales
+412	of which delivery ({0} delivered{1}{2})
+413	, {0} late
+414	, {0} items missing
+415	Goal rewards
+416	Level reward
+417	Cost of goods sold
+418	Rent
+419	Wages ({0} people)
+420	Wage
+421	Section costs
+422	Rotten produce
+423	Waiting fee
+424	Loan installment{0}
+425	(final installment)
+426	Loan installment missed
+427	Net profit
+428	Customers in
+429	Customers who paid
+430	Ran out of patience
+431	Unsold because the shelf was empty
+432	Thieves: caught / came
+433	Stolen goods
+434	{0} items · {1}
+435	False accusations
+436	Found too expensive
+437	Reputation
+438	Till (paid {0} for stock today)
+439	{0} branch (while you were away)
+440	Nobody at the register, the shop stayed closed
+441	Customers
+442	· {0} left without waiting
+443	Rent, wages, costs
+444	Auto-order
+445	From branch to till
+446	Branch reputation
+447	Lost to empty shelves
+448	Neighborhood level{0}
+449	· +{0} points today
+450	Level up: {0} · {1}!
+451	{0} deliveries not signed for during the day were left in the stockroom overnight.
+452	Lesson of the day:
+453	Two loan installments in a row went unpaid; the bank seized the shop.
+454	The till went negative; the shop closed.
+455	Start over
+456	Customer density
+457	Multiplier for customers per hour. The daily increase is added on top.
+458	Patience at the register
+459	Average waiting time on day one (at 1× speed). Drops a little each day.
+460	Price sensitivity
+461	Driver waiting time
+462	How long the truck waits at the back door for a signature.
+463	Day length
+464	How many real minutes 8:00–20:00 lasts.
+465	Buyers at 20% over:
+466	· at 40% over:
+467	Settings
+468	SETTINGS
+469	Music
+470	Morning, daytime and evening music.
+471	On
+472	Off
+473	Sound effects
+474	Register, door bell, horn, engine and other sounds.
+475	Second branch
+476	Open a second shop in another neighborhood. Till, level and goals are shared.
+477	New neighborhood{0}
+478	Hand over the shop and start again elsewhere. Reward: ★{0} shopkeeper star (wholesale discount, starting money and reputation).
+479	Start
+480	Requires: {0}, reputation {1}, level {2}
+481	Save
+482	Your game saves automatically on this device; it continues from the same day even if the app closes.
+483	New game
+484	Close
+485	Balance settings
+486	PLAY WITH THE NUMBERS
+487	These numbers set how hard and fast the game feels. Change them, play a day, and tell me which felt right.
+488	Your game saves automatically on this device; it continues from the same day even if the page reloads.
+489	Start a new game
+490	Reset to defaults
+491	{0} is happy with the raise.
+492	{0} has tomorrow off.
+493	{0} was fired.
+494	Are you sure? The shop will be handed over. Tap again
+495	Are you sure? Your save will be deleted. Tap again
+496	New game started.
+497	Resume game
+498	Pause game
+499	Paused.
+500	Music on.
+501	Music off.
+502	Turn music off
+503	Turn music on
+504	Rush order
+505	Status
+506	Neighborhood level and goals
+507	Reputation details
+508	Game speed
+509	Top-down view of the shop: stockroom, shelves, register, entrance and back door
+510	Language
+511	Continuing from day {0}. Tap the pause button to start.
+512	Continuing from day {0}.
+513	locked
+514	{0} s

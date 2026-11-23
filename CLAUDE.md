@@ -1,6 +1,6 @@
 # CLAUDE.md: Bakkal Sim için çalışma kuralları
 
-Kullanıcıyla Türkçe konuş. Oyundaki her metin şimdilik Türkçedir (7 dil ROADMAP'te).
+Kullanıcıyla Türkçe konuş. Oyun 7 dildedir: tr (kaynak), en, de, es, pt (Brezilya), ru, ar (sağdan sola).
 
 ## Yapı
 
@@ -27,5 +27,11 @@ Kullanıcıyla Türkçe konuş. Oyundaki her metin şimdilik Türkçedir (7 dil 
   Sohbette yanıt sürerken araya gönderilen görseller dosya olarak kaydedilmez; kullanıcıdan
   yeni bir mesajda göndermesini iste.
 - Denge paneli yalnızca `#dev` ile açılır; oyuncu "Ayarlar"ı (müzik, yeni oyun) görür.
-- Değişiklikten sonra `node tests/smoke.js` çalıştır; hata varsa düzelt.
+- **Çeviri:** oyuncuya görünen her metin `tx('Türkçe metin', [değerler])` ile yazılır; Türkçe metin anahtardır,
+  değişkenler `{0}`, `{1}` yer tutucularıdır (dize birleştirme yapma, dillerde kelime sırası değişir).
+  Yeni ya da değişen metni `i18n/src/keys.json` sonuna ekle, her dilin `i18n/src/<dil>.txt` dosyasına
+  aynı numarayla çevirisini yaz ve `python3 tool/build_i18n.py` çalıştır (`i18n/<dil>.js` elle düzenlenmez;
+  betik yer tutucuları denetler, çevirisi olmayan metni bildirir). Sayılar `fmt`/`fmtD`/`pct` ile yazılır.
+  Arapçada hareke kullanma (yazı tipi harfi düşürüyor). Yerleşimde `left/right` yerine `inline-start/end`.
+- Değişiklikten sonra `node tests/smoke.js` çalıştır (yedi dilde oynatır, çevrilmemiş Türkçeyi yakalar); hata varsa düzelt.
 - Oyunun yayında bir önizlemesi vardır (claude.ai artifact). Güncellerken aynı adrese yayınla.

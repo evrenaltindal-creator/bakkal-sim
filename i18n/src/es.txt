@@ -1,0 +1,515 @@
+0	Pan
+1	Leche
+2	Huevos
+3	Pasta
+4	Té
+5	Chocolate
+6	Tomates
+7	Patatas
+8	Manzanas
+9	Queso
+10	Aceitunas
+11	Sucuk
+12	queso, aceitunas, sucuk
+13	Frutería
+14	Tomates, patatas, manzanas. Los clientes se sirven solos, pero cada noche se estropea el 20 % del género.
+15	Charcutería
+16	Queso, aceitunas, sucuk. Los clientes esperan en el mostrador; tienes que ponerte detrás para pesar y servir.
+17	Estanterías grandes
+18	Las estanterías de secos caben un 50 % más, así repones menos.
+19	Segunda caja
+20	Un segundo mostrador de cobro. Los clientes eligen la cola más corta. Tú o un empleado debéis estar allí; nadie hace cola en una caja vacía.
+21	Lector de códigos
+22	Cobrar en caja es el doble de rápido; la cola avanza antes.
+23	Mala fama
+24	40 % menos clientes
+25	Poca paciencia
+26	El banco no te presta
+27	La buena gente no se presenta
+28	Poco fiable
+29	20 % menos clientes
+30	Miran mucho los precios
+31	Límite de crédito 2.000 ₺
+32	Tienda del barrio
+33	Límite de crédito 4.000 ₺
+34	Tienda querida
+35	20 % más clientes
+36	Algo más pacientes
+37	Compran incluso un 10 % sobre el precio de mercado
+38	Límite de crédito 7.000 ₺
+39	La favorita del barrio
+40	40 % más clientes
+41	Compran incluso un 20 % sobre el precio de mercado
+42	El mayorista hace un 5 % de descuento
+43	Límite de crédito 10.000 ₺
+44	Mejores candidatos
+45	Mala
+46	Floja
+47	Tienda
+48	Querida
+49	Favorita
+50	Servicio rápido y amable
+51	Precios baratos
+52	Estante vacío
+53	Producto demasiado caro
+54	Cliente harto de esperar
+55	Pidieron algo que no vendes
+56	Trato del personal
+57	Cuota del préstamo impagada
+58	Ladrón atrapado
+59	Acusaste a un cliente inocente
+60	Pedido entregado a tiempo
+61	Pedido a domicilio con retraso
+62	Pedido incompleto
+63	Se desvanece de noche (hacia la media)
+64	¡Ahora eres {0}! {1}
+65	Cuidado: ahora eres {0}. {1}
+66	Has perdido algunas ventajas.
+67	{0} ya está lleno.
+68	No hay {0} en el almacén. Espera al camión o haz un pedido urgente.
+69	Se acabó {0} en el almacén.
+70	Ha entrado alguien con sudadera negra. ¡Puede ser un ladrón! Tócalo antes de que se vaya sin pagar y luego pulsa ¡ALTO!
+71	Atrapado...
+72	¡Atrapaste al ladrón! {0} artículos volvieron al estante.
+73	¡Atrapaste al ladrón antes de que se llevara nada!
+74	¡No soy un ladrón!
+75	Acusaste a un cliente inocente. Se sabrá en el barrio.
+76	Alguien se fue sin pagar: {0} ({1}).
+77	¿No hay {0}?
+78	¡Se acabó {0}!
+79	¡Muy caro!
+80	¡Basta, me voy!
+81	ESPACIO PUBLICITARIO
+82	Caja
+83	Caja 2
+84	Charcutería
+85	Reponedor
+86	Domicilio
+87	Atiende la caja principal y cobra.
+88	Atiende la segunda caja y cobra.
+89	Atiende el mostrador de charcutería y pesa queso y sucuk.
+90	Repone por su cuenta los estantes bajos desde el almacén.
+91	Prepara los pedidos telefónicos y se los da al repartidor en la puerta trasera. Solo puede hacerlo un empleado.
+92	{0} empezó a trabajar ({1}). Puedes cambiar su tarea en la pantalla de la mañana.
+93	Llamó por la mañana con fiebre. Va al médico.
+94	Su hijo se puso malo en el colegio y tuvo que ir a buscarlo.
+95	Ingresaron a su madre en el hospital; se queda con ella.
+96	Se le inundó la casa. Está esperando al fontanero.
+97	Se averió el autobús y además hay un accidente. Hoy no llega.
+98	Olvidó avisar de la boda de su primo. Pide perdón.
+99	No pudo dormir por un dolor de muelas; va al dentista.
+100	No contesta al teléfono. Tampoco a los mensajes.
+101	Se quedó dormido. A mediodía escribió: «Ya no merece la pena ir».
+102	Anoche fue al fútbol y no pudo levantarse.
+103	Un vecino lo vio pescando en la playa esta mañana.
+104	Escribió: «Hoy no puedo, estoy agotado». La moral está por los suelos.
+105	Dicen que fue a una entrevista en otro súper.
+106	Sonaba agotado por teléfono: «No aguanto este ritmo».
+107	{0} libra hoy.
+108	Le diste el día libre; hoy descansa. Mañana volverá con ánimo.
+109	{0} no vino hoy.
+110	{0} quiere dejar el trabajo.
+111	La moral está muy baja. Una subida o un día libre podría retenerlo.
+112	Pedido a domicilio: {0}. Entregar antes de: {1}.
+113	Un pedido a domicilio llegó tarde; el cliente lo canceló.
+114	Préstamo de {0} ingresado. Durante {1} días se cobrará una cuota de {2} cada noche.
+115	Préstamo pagado. No tienes deudas.
+116	Deuda del préstamo · {0}
+117	Cada noche se cobra una cuota de {0}{1}. Si pagas antes, se perdona el 10 % de lo que queda.
+118	{0} cuota(s) impagadas; una más y quiebras
+119	Liquidar {0}
+120	El banco no te presta
+121	Tu fama es «{0}». Necesitas al menos 20 de fama.
+122	Pedir préstamo · tu límite es {0}
+123	Interés {0} %. La cuota se cobra automáticamente cada noche durante {1} días. Si un día de pago no hay dinero, se suma una multa y baja tu fama; dos seguidas y quiebras. Tu límite crece con tu fama.
+124	Reducir importe del préstamo
+125	Aumentar importe del préstamo
+126	Pagas {0} en total · {1} al día
+127	Elige un importe
+128	Pedir el préstamo
+129	Banco
+130	LIBRE
+131	NO VINO
+132	FALTAN {0} EMPLEADOS
+133	{0} · día {1}
+134	Día libre
+135	El contratiempo de hoy
+136	Hoy otra persona cubrirá la tarea de {0}{1}.{2}
+137	; hoy hay menos pedidos a domicilio
+138	No es la primera vez; poca fiabilidad.
+139	El día que falta no se paga sueldo.
+140	Vale, abrir la tienda
+141	Fama · {0} / 100
+142	La fama es cómo te ve el barrio. Decide cuántos clientes vienen, cuánto esperan, cuánto más pagan y cuánto confía en ti el banco.{0}
+143	{0} puntos
+144	más y serás «{0}».
+145	· estás aquí
+146	Normal: sin ventajas ni castigos.
+147	La sube:
+148	cobro rápido, personal amable, precios por debajo del mercado.
+149	La baja:
+150	clientes hartos de esperar (lo peor), estantes vacíos, precios altos, pedir cosas que no vendes, cuotas impagadas. Cada noche la fama vuelve un poco hacia la media; sigue trabajando para mantenerte arriba.
+151	Vale
+152	¡Llegó el pedido urgente! Espera una firma en la puerta trasera.
+153	¡Llegó el camión! Espera una firma en la puerta trasera.
+154	El conductor no pudo esperar: {0} de recargo, la mercancía volverá en 1 hora.
+155	Descargado al almacén
+156	La mercancía está en el almacén. Toca un estante para reponerlo.
+157	El mayorista hace un 3 % de descuento
+158	Te conocen en el barrio: 5 % más clientes
+159	Otro 3 % de descuento mayorista (6 % en total)
+160	5 % más clientes (10 % en total)
+161	Título: Leyenda del barrio
+162	Tendero novato
+163	Cara conocida
+164	La tienda del barrio
+165	Tendero de confianza
+166	Tendero querido
+167	Estrella de la calle
+168	La tienda del distrito
+169	Maestro tendero
+170	Casi una leyenda
+171	Leyenda del barrio
+172	Nivel de barrio {0}: ¡{1}! {2}
+173	Vende a {0} clientes
+174	Termina el día con {0} en ventas
+175	Que ningún cliente se vaya harto de esperar
+176	Pierde como mucho {0} ventas por estantes vacíos
+177	Firma el camión sin hacerle esperar
+178	Vende {0} de {1}
+179	Entrega {0} pedidos a domicilio
+180	Vende {0} artículos en la charcutería
+181	Vende {0} artículos de frutería
+182	Sube hoy tu fama 3 puntos
+183	Objetivo cumplido: {0}. +{1}
+184	Objetivos de hoy
+185	✓ hecho
+186	✗ fallado
+187	al final del día
+188	Premio: {0} · {1} puntos
+189	Nivel de barrio {0} · {1}
+190	{0} / {1} puntos · Siguiente nivel: {2}
+191	Nivel {0} · {1}
+192	✓
+193	Nivel de barrio
+194	★{0} estrellas de tendero:
+195	el mayorista hace un {0} % de descuento.
+196	Cada venta, pedido entregado y objetivo cumplido da puntos. Al subir de nivel ganas dinero y ventajas permanentes.
+197	Niveles
+198	¡ERES LA LEYENDA DEL BARRIO!
+199	En {0} días convertiste una tiendecita en la favorita del barrio: {1} en caja, fama {2}, nivel de barrio {3}. Aquí ya lo has logrado todo.
+200	¿Qué quieres hacer ahora?
+201	Empezar de nuevo en otro barrio (★{0})
+202	Traspasas la tienda y empiezas con una tiendecita en otro barrio. Premio permanente: ★{0} estrella de tendero. {1} % de descuento mayorista, +{2} y +{3} de fama al empezar.
+203	Ya tienes una segunda sucursal
+204	Abrir segunda sucursal · {0}
+205	Una segunda tienda en otro barrio. Cada mañana eliges dónde estar; tus empleados llevan la otra.
+206	Seguir en esta tienda
+207	Si sigues, esta opción queda en Ajustes; puedes mudarte a otro barrio cuando quieras.
+208	¡Barrio nuevo, tienda nueva! Tus ★{0} estrellas de tendero vienen contigo.
+209	Centro
+210	Tu primera tienda.
+211	Barrio universitario
+212	Mucho movimiento, pero miran mucho el precio; alquiler barato.
+213	Urbanización
+214	Pocos clientes pero generosos, pagan más; alquiler alto, pocos ladrones.
+215	Mercado
+216	Muy concurrido, muchos ladrones; alquiler alto.
+217	¡La sucursal {0} abre mañana! Por la mañana eliges en qué tienda estar.
+218	Se rompió la nevera. La charcutería y la fruta están a punto de estropearse.
+219	Llamar al técnico
+220	Da igual
+221	Anoche un ladrón entró en el almacén; puede volver esta semana.
+222	Contratar un vigilante nocturno
+223	Solo cambiar la cerradura
+224	El personal se queja: «El jefe nunca aparece».
+225	Dar una prima
+226	Ignorarlo
+227	Viene inspección sanitaria: control de caducados.
+228	Revisar los estantes
+229	Arriesgarse
+230	{0}: te multaron con 2.000 ₺ en la inspección.
+231	Enfrente abrió un súper de cadena; los clientes se van allí.
+232	Hacer campaña de apertura
+233	Esperar
+234	{0} ({1}) se fue. La moral cayó mientras no estabas.
+235	No tienes dinero para eso.
+236	{0}: no decidiste, así que pasó «{1}».
+237	Fuiste en persona y lo arreglaste
+238	Hoy estás en la tienda de {0}.
+239	Tiendas
+240	{0} · hoy estás aquí
+241	· abre mañana
+242	Sucursal nueva. Te recomiendo ir el primer día para organizarla y contratar al menos un cajero.
+243	Ayer: {0}
+244	nadie en caja, la tienda no abrió
+245	{0} clientes, ventas {1}, neto
+246	aún no hay informe
+247	Fama {0} · Personal {1}/{2}{3}
+248	· <span class="t-bad">sin cajero: no hay ventas si no vas</span>
+249	Crisis resuelta: {0}.
+250	Ir allí hoy{0}
+251	(resuelve la crisis)
+252	Pedido automático: {0}
+253	sí
+254	no
+255	Mientras no estás, trabaja el personal: el cajero vende, el reponedor llena desde el almacén y la charcutería necesita a alguien en el mostrador. El pedido automático compra cada noche lo que falta con la caja común.
+256	Segunda sucursal · {0}
+257	¿QUÉ BARRIO?
+258	La sucursal empieza de cero como una tiendecita: sus propios estantes, almacén, fama, personal y mejoras. La caja, el nivel de barrio y los objetivos son comunes. Cada mañana eliges en qué tienda estar; tus empleados llevan la otra.
+259	Abrir
+260	Cancelar
+261	Son las 20:00, cerraste la puerta. El día termina cuando salgan los últimos clientes.
+262	{0} renunció y se fue.
+263	¡La tienda está abierta! El camión llega entre las 9:30 y las 11:30.
+264	¡La tienda está abierta! Hoy no pediste nada.
+265	Pedido urgente hecho; llega en 1 hora aprox.
+266	{0} devuelto, {1} vuelven a la caja.
+267	{0} vendido, {1} vuelven a la caja.
+268	{0} está abierto. Los pedidos de los nuevos productos se añadieron a la lista.
+269	No hay camión en la puerta. El pedido de la mañana llega entre las 9:30 y las 11:30.
+270	La frutería está cerrada. Puedes abrirla en Mejoras en la pantalla de la mañana.
+271	La charcutería está cerrada. Puedes abrirla en Mejoras en la pantalla de la mañana.
+272	{0} está en la charcutería.
+273	{0} está en la segunda caja.
+274	{0} está en la caja.
+275	Almacén. Para reponer, toca un estante; llevarás la mercancía tú.
+276	ALMACÉN
+277	PUERTA TRASERA
+278	ENTRADA
+279	CAJA 2
+280	CAJA
+281	FRUTERÍA · CERRADA
+282	Pantalla de mañana → Mejoras
+283	CHARCUTERÍA
+284	VACÍO
+285	Sucursal {0}
+286	¡ALTO!
+287	Día {0}
+288	Nv {0}
+289	Cerrado, últimos clientes
+290	Camión en la puerta · {0} s
+291	{0} esperando en caja
+292	{0} esperando en la caja 2
+293	{0} esperando en charcutería
+294	Domicilio: {0} pedidos
+295	Vacío: {0}
+296	Queda poco: {0}
+297	Objetivos {0}/{1}
+298	Estás en la caja, sin cola
+299	Un momento tranquilo
+300	Un juego de gestión de tienda de barrio
+301	Llevas una tiendecita tú solo. Solo puedes estar en un sitio a la vez; tú decides adónde correr. Cada día hay más clientes, cestas más llenas, menos paciencia y más alquiler.
+302	Eres quien lleva el delantal verde.
+303	Toca adonde quieras ir.
+304	Toca un estante:
+305	vas al almacén, coges una caja y llenas el estante.
+306	Toca la caja:
+307	te pones en la caja y cobras al siguiente cliente. Si no estás, nadie puede pagar.
+308	Los clientes pierden la paciencia.
+309	Cuando la barra sobre su cabeza se pone roja, se van. Lo que cogen va en una bolsa blanca; al pagar se vuelve verde. Los estantes vacíos, los precios altos o no tener lo que buscan dañan tu fama.
+310	Desde el día 4 aparecen ladrones.
+311	Un ladrón pasa de la caja y va a la puerta con una bolsa blanca (sin pagar). Toca a quien sospeches y luego ¡ALTO! Si paras a un inocente, tu fama cae mucho.
+312	Cuando el camión llegue a la puerta trasera, tócalo y firma.
+313	Si tardas, el conductor cobra {0} y vuelve 1 hora después.
+314	Cada día tienes 3 objetivos.
+315	Cúmplelos y gana dinero y puntos; los puntos suben tu nivel de barrio y dan premios.
+316	Tienes que crecer.
+317	Desde el día 3 piden fruta y verdura, desde el día 5 queso y sucuk. La frutería y la charcutería se abren en la pantalla de la mañana.
+318	Toca el cuadro de fama arriba para ver qué la cambia. En la pantalla de la mañana puedes pedir un préstamo. Si no das abasto, contrata allí personal; el equipo crece al abrir frutería y charcutería, y puedes añadir una segunda caja. El idioma y el sonido se cambian en Ajustes, arriba a la derecha.
+319	Empezar la mañana
+320	Hoy:
+321	clientes {0}, paciencia {1}, alquiler {2}{3}.
+322	, gastos de secciones
+323	El casero subió el alquiler.
+324	<b>Cuidado:</b> han empezado los robos en el barrio. Hoy puede entrar alguien sospechoso.
+325	Ayer pidieron fruta y verdura {0} veces. No tienes frutería.
+326	En el barrio empiezan a pedir fruta y verdura.
+327	Ayer pidieron queso, aceitunas o sucuk {0} veces. No tienes charcutería.
+328	Empiezan a pedir queso y aceitunas.
+329	Si no das abasto, puedes contratar a alguien abajo.
+330	? (se sabrá en {0} días)
+331	quiere irse
+332	libra hoy
+333	hoy trabaja
+334	(se cambia con {0})
+335	{0} · {1}/día · {2}
+336	Moral
+337	· Rapidez {0} · Amabilidad {1} · Fiabilidad {2}{3}
+338	quiere {0}
+339	{0} También puedes tocar a un empleado durante el día para cambiar su tarea al instante.
+340	Subir el sueldo un 15 %
+341	Mañana libra
+342	Darle mañana libre
+343	Despedir
+344	{0} · {1}/día
+345	Rapidez {0} · Amabilidad {1} · Fiabilidad ?
+346	La fiabilidad se ve con el tiempo.
+347	Contratar
+348	Nuevo anuncio ({0})
+349	Contratar a otra persona
+350	Contratar empleado
+351	Alguien para la caja, reponer, los pedidos a domicilio{0}. Pon un anuncio y se presentan tres candidatos. El sueldo se paga cada noche.
+352	o la charcutería
+353	Poner anuncio {0}
+354	Frutería
+355	Equipo completo
+356	Tu tienda admite ahora como mucho {0} empleados.{1}
+357	Abre {0} para contratar a una persona más.
+358	Personal · {0}/{1}
+359	Mejoras
+360	· comprado
+361	Lo compraste esta mañana; antes de abrir puedes devolverlo gratis.
+362	Si lo vendes, recuperas el 60 % del precio y el coste del género restante.
+363	Si lo vendes, recuperas el 60 % del precio.
+364	Devolver
+365	Vender
+366	Gasto diario {0}.
+367	Precio de venta
+368	Bajar el precio de {0}
+369	Subir el precio de {0}
+370	· perecedero
+371	· en mostrador
+372	Estante {0}/{1} · Almacén {2}{3}
+373	Pedido
+374	Pedir menos {0}
+375	Pedir más {0}
+376	Caja de {0} · {1}
+377	Pedido urgente · 25 % más caro · Hora {0}
+378	PEDIDO URGENTE
+379	Llega en 1 hora aprox. El juego está en pausa mientras esta pantalla esté abierta.
+380	Mañana · día {0}{1}
+381	DÍA {0}
+382	El camión trae tu pedido entre las 9:30 y las 11:30.{0}{1}
+383	Neto de ayer {0}, fama {1}.
+384	Hay un pedido sugerido para tu primer día.
+385	Pedidos y precios
+386	No hay dinero suficiente.
+387	Reduce o vacía el pedido; si hace falta, devuelve una mejora de arriba. También puedes abrir sin pedir y vender lo que hay en los estantes.
+388	Vaciar pedido
+389	Hacer pedido
+390	Abrir la tienda
+391	precio de mercado
+392	{0} más caro
+393	{0} más barato
+394	Mercado {0} ·
+395	· compradores {0}
+396	En caja {0}
+397	Queda
+398	No hay dinero suficiente
+399	Pidieron fruta y verdura {0} veces, pero no tienes frutería. Ahorra y piensa en abrir una.
+400	Pidieron queso, aceitunas o sucuk {0} veces, pero no tienes charcutería.
+401	La mayor pérdida fueron los estantes vacíos: {0} artículos no se vendieron por falta. Repón antes de la hora punta y pide más.
+402	{0} clientes se hartaron de esperar y se fueron. Vuelve a la caja o la charcutería cuando crezca la cola.
+403	{0} veces les parecieron altos los precios. Acércate al precio de mercado.
+404	De noche se estropeó fruta y verdura por valor de {0}. Pídela en tandas más pequeñas y más a menudo.
+405	Hoy robaron mercancía por valor de {0}. Si ves a alguien ir a la puerta con una bolsa blanca (sin pagar) sin pasar por caja, tócalo y pulsa ¡ALTO!
+406	Acusaste a un inocente; tu fama cayó mucho. No pares a nadie si no estás seguro: un ladrón pasa de la caja y va a la puerta con bolsa blanca.
+407	Hiciste esperar al conductor y pagaste {0} de recargo.
+408	Un día limpio. Mañana vendrán aún más clientes.
+409	Fin del día · 20:00
+410	DÍA {0} CERRADO
+411	Ventas
+412	de ellas a domicilio ({0} entregados{1}{2})
+413	, {0} tarde
+414	, faltaron {0} artículos
+415	Premios de objetivos
+416	Premio de nivel
+417	Coste de la mercancía vendida
+418	Alquiler
+419	Sueldos ({0} personas)
+420	Sueldo
+421	Gastos de secciones
+422	Fruta estropeada
+423	Recargo por espera
+424	Cuota del préstamo{0}
+425	(última cuota)
+426	Cuota impagada
+427	Beneficio neto
+428	Clientes que entraron
+429	Clientes que pagaron
+430	Perdieron la paciencia
+431	Sin vender por estante vacío
+432	Ladrones: atrapados / vinieron
+433	Mercancía robada
+434	{0} artículos · {1}
+435	Acusaciones falsas
+436	Lo vieron caro
+437	Fama
+438	Caja (hoy pagaste {0} en mercancía)
+439	Sucursal {0} (mientras no estabas)
+440	Nadie en caja, la tienda no abrió
+441	Clientes
+442	· {0} se fueron sin esperar
+443	Alquiler, sueldos, gastos
+444	Pedido automático
+445	De la sucursal a la caja
+446	Fama de la sucursal
+447	Perdido por estantes vacíos
+448	Nivel de barrio{0}
+449	· hoy +{0} puntos
+450	Subiste de nivel: ¡{0} · {1}!
+451	{0} entregas sin firmar durante el día se dejaron de noche en el almacén.
+452	Lección del día:
+453	Dos cuotas seguidas sin pagar; el banco embargó la tienda.
+454	La caja quedó en negativo; la tienda cerró.
+455	Empezar de nuevo
+456	Densidad de clientes
+457	Multiplicador de clientes por hora. Se le suma el aumento diario.
+458	Paciencia en caja
+459	Espera media el primer día (a velocidad 1×). Baja un poco cada día.
+460	Sensibilidad al precio
+461	Espera del conductor
+462	Cuánto espera el camión una firma en la puerta trasera.
+463	Duración del día
+464	Cuántos minutos reales dura de 8:00 a 20:00.
+465	Compradores con un 20 % más:
+466	· con un 40 % más:
+467	Ajustes
+468	AJUSTES
+469	Música
+470	Música de mañana, día y tarde.
+471	Sí
+472	No
+473	Efectos de sonido
+474	Caja, campanilla, bocina, motor y otros sonidos.
+475	Segunda sucursal
+476	Abre una segunda tienda en otro barrio. La caja, el nivel y los objetivos son comunes.
+477	Barrio nuevo{0}
+478	Traspasa la tienda y empieza en otro sitio. Premio: ★{0} estrella de tendero (descuento mayorista, dinero y fama iniciales).
+479	Empezar
+480	Requisitos: {0}, fama {1}, nivel {2}
+481	Guardado
+482	Tu partida se guarda automáticamente en este dispositivo; sigue el mismo día aunque cierres la app.
+483	Nueva partida
+484	Cerrar
+485	Ajustes de equilibrio
+486	JUEGA CON LOS NÚMEROS
+487	Estos números marcan lo difícil y rápido que se siente el juego. Cámbialos, juega un día y dime cuál te pareció bien.
+488	Tu partida se guarda automáticamente en este dispositivo; sigue el mismo día aunque se recargue la página.
+489	Empezar nueva partida
+490	Restablecer valores
+491	{0} está contento con la subida.
+492	{0} libra mañana.
+493	{0} fue despedido.
+494	¿Seguro? Se traspasará la tienda. Toca otra vez
+495	¿Seguro? Se borrará tu partida. Toca otra vez
+496	Nueva partida iniciada.
+497	Reanudar partida
+498	Pausar partida
+499	En pausa.
+500	Música activada.
+501	Música desactivada.
+502	Desactivar música
+503	Activar música
+504	Pedido urgente
+505	Estado
+506	Nivel de barrio y objetivos
+507	Detalles de fama
+508	Velocidad del juego
+509	Vista cenital de la tienda: almacén, estantes, caja, entrada y puerta trasera
+510	Idioma
+511	Continúas desde el día {0}. Pulsa el botón de pausa para empezar.
+512	Continúas desde el día {0}.
+513	cerrado
+514	{0} s

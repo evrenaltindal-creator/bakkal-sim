@@ -1,0 +1,515 @@
+0	Brot
+1	Milch
+2	Eier
+3	Nudeln
+4	Tee
+5	Schokolade
+6	Tomaten
+7	Kartoffeln
+8	Äpfel
+9	Käse
+10	Oliven
+11	Sucuk
+12	Käse, Oliven, Sucuk
+13	Obst & Gemüse
+14	Tomaten, Kartoffeln, Äpfel. Kunden bedienen sich selbst, aber jede Nacht verderben 20 % der Ware.
+15	Feinkosttheke
+16	Käse, Oliven, Sucuk. Kunden warten an der Theke; du musst dahinter, um abzuwiegen und zu bedienen.
+17	Große Regale
+18	Trockenwarenregale fassen 50 % mehr, du musst seltener auffüllen.
+19	Zweite Kasse
+20	Ein zweiter Kassentisch. Kunden wählen die kürzere Schlange. Du oder ein Mitarbeiter müsst dort stehen; an einer leeren Kasse stellt sich niemand an.
+21	Barcodescanner
+22	Das Scannen an der Kasse geht doppelt so schnell, die Schlange wird kürzer.
+23	Schlechter Ruf
+24	40 % weniger Kunden
+25	Wenig Geduld
+26	Die Bank gibt dir keinen Kredit
+27	Gute Leute bewerben sich nicht
+28	Unzuverlässig
+29	20 % weniger Kunden
+30	Sie achten sehr auf die Preise
+31	Kreditlimit 2.000 ₺
+32	Laden um die Ecke
+33	Kreditlimit 4.000 ₺
+34	Beliebter Laden
+35	20 % mehr Kunden
+36	Etwas geduldiger
+37	Sie kaufen auch 10 % über Marktpreis
+38	Kreditlimit 7.000 ₺
+39	Liebling des Viertels
+40	40 % mehr Kunden
+41	Sie kaufen auch 20 % über Marktpreis
+42	Großhändler gibt 5 % Rabatt
+43	Kreditlimit 10.000 ₺
+44	Bessere Bewerber
+45	Schlecht
+46	Schwach
+47	Laden
+48	Beliebt
+49	Liebling
+50	Schneller, freundlicher Service
+51	Günstige Preise
+52	Leeres Regal
+53	Produkt zu teuer gefunden
+54	Kunde hat das Warten satt
+55	Nach etwas gefragt, das du nicht führst
+56	Verhalten der Mitarbeiter
+57	Kreditrate nicht bezahlt
+58	Dieb gefasst
+59	Unschuldigen Kunden beschuldigt
+60	Lieferung pünktlich
+61	Verspätete Lieferbestellung
+62	Unvollständige Lieferung
+63	Über Nacht verblasst (Richtung Durchschnitt)
+64	Du bist jetzt {0}! {1}
+65	Vorsicht: Du bist jetzt {0}. {1}
+66	Du hast einige Vorteile verloren.
+67	{0} ist schon voll.
+68	Kein {0} im Lager. Warte auf den Lkw oder gib eine Eilbestellung auf.
+69	{0} ist im Lager ausgegangen.
+70	Jemand im schwarzen Kapuzenpulli ist reingekommen. Vielleicht ein Dieb! Tippe ihn an, bevor er ohne zu zahlen geht, und dann auf HALT!
+71	Gefasst...
+72	Du hast den Dieb erwischt! {0} Artikel gingen zurück ins Regal.
+73	Du hast den Dieb erwischt, bevor er etwas nahm!
+74	Ich bin kein Dieb!
+75	Du hast einen unschuldigen Kunden beschuldigt. Das spricht sich herum.
+76	Jemand ist ohne zu zahlen gegangen: {0} ({1}).
+77	Kein {0}?
+78	{0} ist alle!
+79	Zu teuer!
+80	Jetzt reicht's, ich gehe!
+81	WERBEFLÄCHE
+82	Kasse
+83	Kasse 2
+84	Feinkost
+85	Regale
+86	Lieferung
+87	Bedient die Hauptkasse und kassiert.
+88	Bedient die zweite Kasse und kassiert.
+89	Steht an der Feinkosttheke und wiegt Käse und Sucuk ab.
+90	Füllt leere Regale selbstständig aus dem Lager auf.
+91	Sammelt Telefonbestellungen aus den Regalen und übergibt sie dem Kurier an der Hintertür. Das können nur Mitarbeiter.
+92	{0} hat angefangen ({1}). Die Aufgabe kannst du auf dem Morgenbildschirm ändern.
+93	Hat morgens mit Fieber angerufen. Geht zum Arzt.
+94	Das Kind wurde in der Schule krank, musste es abholen.
+95	Die Mutter kam ins Krankenhaus; bleibt bei ihr.
+96	Wasserschaden zu Hause. Wartet auf den Klempner.
+97	Der Bus ist liegen geblieben und dazu ein Unfall. Schafft es heute nicht.
+98	Hat vergessen, die Hochzeit des Cousins zu erwähnen. Entschuldigt sich.
+99	Konnte wegen Zahnschmerzen nicht schlafen; geht zum Zahnarzt.
+100	Geht nicht ans Telefon. Antwortet auch nicht auf Nachrichten.
+101	Verschlafen. Schrieb mittags: „Lohnt sich jetzt nicht mehr.“
+102	War gestern beim Fußballspiel und kam nicht aus dem Bett.
+103	Ein Nachbar sah ihn heute früh am Strand beim Angeln.
+104	Schrieb: „Ich schaffe es heute nicht, ich bin fertig.“ Die Moral ist am Boden.
+105	Gerüchten zufolge hatte er ein Vorstellungsgespräch bei einem anderen Markt.
+106	Klang am Telefon erschöpft: „Ich halte das Tempo nicht durch.“
+107	{0} hat heute frei.
+108	Du hast frei gegeben, heute wird ausgeruht. Morgen kommt er gut gelaunt zurück.
+109	{0} ist heute nicht gekommen.
+110	{0} will kündigen.
+111	Die Moral ist sehr niedrig. Eine Gehaltserhöhung oder ein freier Tag könnte helfen.
+112	Lieferbestellung: {0}. Liefern bis: {1}.
+113	Eine Lieferbestellung kam zu spät; der Kunde hat storniert.
+114	{0} Kredit eingezahlt. {1} Tage lang wird jeden Abend eine Rate von {2} abgebucht.
+115	Kredit abbezahlt. Du bist schuldenfrei.
+116	Kreditschuld · {0}
+117	Jeden Abend wird eine Rate von {0} abgebucht{1}. Zahlst du früher, werden 10 % der Restschuld erlassen.
+118	{0} Rate(n) nicht bezahlt; noch eine und du bist pleite
+119	{0} ablösen
+120	Die Bank gibt dir keinen Kredit
+121	Dein Ruf ist „{0}“. Du brauchst mindestens 20 Ruf.
+122	Kredit aufnehmen · dein Limit ist {0}
+123	Zinsen {0} %. Die Rate wird {1} Tage lang jeden Abend automatisch abgebucht. Ist an einem Fälligkeitstag kein Geld da, kommt eine Strafe hinzu und dein Ruf sinkt; zwei Mal in Folge und du bist pleite. Dein Limit wächst mit deinem Ruf.
+124	Kreditbetrag verringern
+125	Kreditbetrag erhöhen
+126	Du zahlst insgesamt {0} · {1} pro Tag
+127	Wähle einen Betrag
+128	Kredit aufnehmen
+129	Bank
+130	FREI
+131	NICHT GEKOMMEN
+132	{0} MITARBEITER FEHLEN
+133	{0} · Tag {1}
+134	Freier Tag
+135	Das Missgeschick des Tages
+136	Heute übernimmt jemand anderes die Aufgabe {0}{1}.{2}
+137	; heute weniger Lieferbestellungen
+138	Nicht das erste Mal; wenig Zuverlässigkeit.
+139	Für einen Fehltag wird kein Lohn gezahlt.
+140	Okay, Laden öffnen
+141	Ruf · {0} / 100
+142	Der Ruf ist, wie das Viertel dich sieht. Er bestimmt, wie viele Kunden kommen, wie lange sie warten, wie viel Aufpreis sie zahlen und wie sehr die Bank dir vertraut.{0}
+143	{0} Punkte
+144	mehr, und du wirst „{0}“.
+145	· du bist hier
+146	Normal: keine Vorteile, keine Nachteile.
+147	Steigt durch:
+148	schnelle Kasse, freundliche Mitarbeiter, Preise unter Marktpreis.
+149	Sinkt durch:
+150	Kunden, die das Warten satthaben (am schlimmsten), leere Regale, hohe Preise, Nachfrage nach Dingen, die du nicht führst, unbezahlte Kreditraten. Der Ruf sinkt jede Nacht etwas Richtung Durchschnitt; bleib dran, um oben zu bleiben.
+151	Okay
+152	Eilbestellung ist da! Wartet an der Hintertür auf eine Unterschrift.
+153	Der Lkw ist da! Wartet an der Hintertür auf eine Unterschrift.
+154	Der Fahrer konnte nicht warten: {0} Wartegebühr, die Ware kommt in 1 Stunde wieder.
+155	Ins Lager entladen
+156	Die Ware ist im Lager. Tippe auf ein Regal, um es aufzufüllen.
+157	Großhändler gibt 3 % Rabatt
+158	Man kennt dich hier: 5 % mehr Kunden
+159	Weitere 3 % Großhandelsrabatt (insgesamt 6 %)
+160	5 % mehr Kunden (insgesamt 10 %)
+161	Titel: Legende des Viertels
+162	Neuer Krämer
+163	Bekanntes Gesicht
+164	Der Laden des Viertels
+165	Vertrauter Händler
+166	Beliebter Händler
+167	Star der Straße
+168	Der Laden des Bezirks
+169	Meisterhändler
+170	Fast eine Legende
+171	Legende des Viertels
+172	Viertelstufe {0}: {1}! {2}
+173	Verkaufe an {0} Kunden
+174	Beende den Tag mit {0} Umsatz
+175	Kein Kunde geht, weil er das Warten satthat
+176	Verliere höchstens {0} Verkäufe durch leere Regale
+177	Unterschreibe für den Lkw, ohne ihn warten zu lassen
+178	Verkaufe {0} {1}
+179	Liefere {0} Bestellungen aus
+180	Verkaufe {0} Artikel an der Feinkosttheke
+181	Verkaufe {0} Artikel Obst & Gemüse
+182	Steigere heute deinen Ruf um 3 Punkte
+183	Ziel erreicht: {0}. +{1}
+184	Ziele für heute
+185	✓ erledigt
+186	✗ verfehlt
+187	am Tagesende
+188	Belohnung: {0} · {1} Punkte
+189	Viertelstufe {0} · {1}
+190	{0} / {1} Punkte · Nächste Stufe: {2}
+191	Stufe {0} · {1}
+192	✓
+193	Viertelstufe
+194	★{0} Händlersterne:
+195	der Großhändler gibt {0} % Rabatt.
+196	Jeder Verkauf, jede Lieferung und jedes erreichte Ziel bringt Punkte. Mit jeder Stufe gibt es Geld und dauerhafte Vorteile.
+197	Stufen
+198	DU BIST DIE LEGENDE DES VIERTELS!
+199	In {0} Tagen hast du aus einem winzigen Laden den Liebling des Viertels gemacht: {1} in der Kasse, Ruf {2}, Viertelstufe {3}. Hier hast du alles erreicht.
+200	Was möchtest du jetzt tun?
+201	In einem neuen Viertel neu anfangen (★{0})
+202	Du übergibst den Laden und fängst in einem anderen Viertel mit einem kleinen Geschäft neu an. Dauerhafte Belohnung: ★{0} Händlerstern. {1} % Großhandelsrabatt, +{2} und +{3} Ruf zum Start.
+203	Du hast schon eine zweite Filiale
+204	Zweite Filiale eröffnen · {0}
+205	Ein zweiter Laden in einem anderen Viertel. Jeden Morgen wählst du, wo du bist; deine Mitarbeiter führen den anderen.
+206	In diesem Laden weitermachen
+207	Wenn du weitermachst, bleibt diese Option in den Einstellungen; du kannst jederzeit in ein neues Viertel ziehen.
+208	Neues Viertel, neuer Laden! Deine ★{0} Händlersterne kommen mit.
+209	Zentrum
+210	Dein erster Laden.
+211	Studentenviertel
+212	Viel los, aber sehr preisbewusst; günstige Miete.
+213	Wohnanlage
+214	Wenige, aber großzügige Kunden, die mehr zahlen; hohe Miete, wenig Diebe.
+215	Basar
+216	Sehr voll, viele Diebe; hohe Miete.
+217	Die Filiale {0} öffnet morgen! Morgens wählst du, in welchem Laden du bist.
+218	Der Kühlschrank ist kaputt. Feinkost und Gemüse verderben gleich.
+219	Techniker rufen
+220	Egal
+221	Letzte Nacht ist ein Dieb ins Lager eingebrochen; er kommt diese Woche vielleicht wieder.
+222	Nachtwächter einstellen
+223	Nur das Schloss wechseln
+224	Die Mitarbeiter beschweren sich: „Der Chef lässt sich nie blicken.“
+225	Prämie zahlen
+226	Ignorieren
+227	Gesundheitsinspektion kommt: Prüfung auf abgelaufene Ware.
+228	Regale kontrollieren lassen
+229	Drauf ankommen lassen
+230	{0}: Bei der Inspektion gab es 2.000 ₺ Strafe.
+231	Gegenüber hat ein Supermarkt einer Kette eröffnet; Kunden wandern ab.
+232	Eröffnungsaktion starten
+233	Abwarten
+234	{0} ({1}) hat gekündigt. Die Moral sank, während du weg warst.
+235	Dafür reicht das Geld nicht.
+236	{0}: Du hast nicht entschieden, also geschah „{1}“.
+237	Du warst selbst dort und hast es geregelt
+238	Heute bist du im Laden {0}.
+239	Läden
+240	{0} · heute bist du hier
+241	· öffnet morgen
+242	Neue Filiale. Geh am ersten Tag hin, um alles einzurichten und mindestens eine Kassenkraft einzustellen.
+243	Gestern: {0}
+244	niemand an der Kasse, der Laden blieb zu
+245	{0} Kunden, Umsatz {1}, netto
+246	noch kein Bericht
+247	Ruf {0} · Mitarbeiter {1}/{2}{3}
+248	· <span class="t-bad">keine Kassenkraft: ohne dich kein Verkauf</span>
+249	Krise gelöst: {0}.
+250	Heute dorthin gehen{0}
+251	(löst die Krise)
+252	Autobestellung: {0}
+253	an
+254	aus
+255	Während du weg bist, arbeiten die Mitarbeiter: Die Kassenkraft verkauft, die Regalkraft füllt aus dem Lager auf, und an der Feinkost muss jemand stehen. Die Autobestellung kauft jede Nacht Fehlendes aus der gemeinsamen Kasse.
+256	Zweite Filiale · {0}
+257	WELCHES VIERTEL?
+258	Die Filiale beginnt als kleiner Laden bei null: eigene Regale, eigenes Lager, Ruf, Personal und Ausbauten. Kasse, Viertelstufe und Ziele sind gemeinsam. Jeden Morgen wählst du, in welchem Laden du bist; deine Mitarbeiter führen den anderen.
+259	Eröffnen
+260	Abbrechen
+261	Es ist 20 Uhr, du hast die Tür geschlossen. Der Tag endet, wenn die letzten Kunden gehen.
+262	{0} hat gekündigt und ist gegangen.
+263	Der Laden ist offen! Der Lkw kommt zwischen 9:30 und 11:30.
+264	Der Laden ist offen! Heute hast du nichts bestellt.
+265	Eilbestellung aufgegeben; kommt in etwa 1 Stunde.
+266	{0} zurückgegeben, {1} zurück in die Kasse.
+267	{0} verkauft, {1} zurück in die Kasse.
+268	{0} ist eröffnet. Bestellungen für die neuen Produkte wurden zur Liste hinzugefügt.
+269	Kein Lkw an der Tür. Die Morgenbestellung kommt zwischen 9:30 und 11:30.
+270	Obst & Gemüse ist gesperrt. Du kannst es auf dem Morgenbildschirm unter Ausbauten freischalten.
+271	Die Feinkost ist gesperrt. Du kannst sie auf dem Morgenbildschirm unter Ausbauten freischalten.
+272	{0} steht an der Feinkosttheke.
+273	{0} steht an der zweiten Kasse.
+274	{0} steht an der Kasse.
+275	Lager. Zum Auffüllen tippe auf ein Regal; du bringst die Ware selbst hin.
+276	LAGER
+277	HINTERTÜR
+278	EINGANG
+279	KASSE 2
+280	KASSE
+281	OBST & GEMÜSE · GESPERRT
+282	Morgenbildschirm → Ausbauten
+283	FEINKOST
+284	LEER
+285	Filiale {0}
+286	HALT!
+287	Tag {0}
+288	St. {0}
+289	Geschlossen, letzte Kunden
+290	Lkw an der Tür · {0} s
+291	{0} warten an der Kasse
+292	{0} warten an Kasse 2
+293	{0} warten an der Feinkost
+294	Lieferung: {0} Bestellungen
+295	Leer: {0}
+296	Wird knapp: {0}
+297	Ziele {0}/{1}
+298	Du bist an der Kasse, keine Schlange
+299	Ein ruhiger Moment
+300	Ein Tante-Emma-Laden-Managementspiel
+301	Du führst einen kleinen Laden allein. Du kannst nur an einem Ort sein; du entscheidest, wohin du eilst. Jeden Tag kommen mehr Kunden, die Körbe werden voller, die Geduld kürzer und die Miete höher.
+302	Du bist die Person mit der grünen Schürze.
+303	Tippe dorthin, wo du hinwillst.
+304	Tippe auf ein Regal:
+305	du gehst ins Lager, nimmst eine Kiste und füllst das Regal auf.
+306	Tippe auf die Kasse:
+307	du stellst dich an die Kasse und kassierst den nächsten Kunden. Bist du nicht da, kann niemand zahlen.
+308	Kunden verlieren die Geduld.
+309	Wird der Balken über ihrem Kopf rot, gehen sie. Was sie nehmen, kommt in eine weiße Tüte; nach dem Bezahlen wird sie grün. Leere Regale, hohe Preise oder fehlende Waren schaden deinem Ruf.
+310	Ab Tag 4 kommen Diebe.
+311	Ein Dieb geht mit einer weißen (unbezahlten) Tüte an der Kasse vorbei zur Tür. Tippe die verdächtige Person an, dann auf HALT! Hältst du einen Unschuldigen auf, leidet dein Ruf stark.
+312	Wenn der Lkw an der Hintertür ist, tippe ihn an und unterschreibe.
+313	Bist du zu spät, verlangt der Fahrer {0} und kommt 1 Stunde später wieder.
+314	Jeden Tag bekommst du 3 Ziele.
+315	Erfülle sie für Geld und Punkte; Punkte heben deine Viertelstufe und bringen Belohnungen.
+316	Du musst wachsen.
+317	Ab Tag 3 wird nach Obst & Gemüse gefragt, ab Tag 5 nach Käse und Sucuk. Obst & Gemüse und Feinkost eröffnest du auf dem Morgenbildschirm.
+318	Tippe oben auf das Ruf-Feld, um zu sehen, was den Ruf verändert. Einen Bankkredit nimmst du auf dem Morgenbildschirm auf. Wenn du nicht hinterherkommst, stell dort Personal ein; das Team wächst mit Obst & Gemüse und Feinkost, und du kannst eine zweite Kasse dazukaufen. Sprache und Ton änderst du über Einstellungen oben rechts.
+319	Morgen beginnen
+320	Heute:
+321	Kunden {0}, Geduld {1}, Miete {2}{3}.
+322	, Abteilungskosten
+323	Der Vermieter hat die Miete erhöht.
+324	<b>Vorsicht:</b> Im Viertel gibt es Diebstähle. Heute kommt vielleicht jemand Verdächtiges.
+325	Gestern wurde {0} Mal nach Obst & Gemüse gefragt. Du hast keine Obst- und Gemüseabteilung.
+326	Im Viertel wird nach Obst & Gemüse gefragt.
+327	Gestern wurde {0} Mal nach Käse, Oliven oder Sucuk gefragt. Du hast keine Feinkost.
+328	Es wird nach Käse und Oliven gefragt.
+329	Wenn du nicht hinterherkommst, kannst du unten jemanden einstellen.
+330	? (in {0} Tagen bekannt)
+331	will kündigen
+332	heute frei
+333	heute bei der Arbeit
+334	(tauscht mit {0})
+335	{0} · {1}/Tag · {2}
+336	Moral
+337	· Tempo {0} · Freundlichkeit {1} · Zuverlässigkeit {2}{3}
+338	will {0}
+339	{0} Du kannst Mitarbeiter auch tagsüber antippen, um ihre Aufgabe sofort zu ändern.
+340	15 % mehr Lohn
+341	Morgen frei
+342	Morgen frei geben
+343	Entlassen
+344	{0} · {1}/Tag
+345	Tempo {0} · Freundlichkeit {1} · Zuverlässigkeit ?
+346	Die Zuverlässigkeit zeigt sich mit der Zeit.
+347	Einstellen
+348	Neue Anzeige ({0})
+349	Weitere Kraft einstellen
+350	Mitarbeiter einstellen
+351	Jemand für Kasse, Regale, Lieferung{0}. Schalte eine Anzeige und drei Bewerber melden sich. Der Lohn wird jeden Abend gezahlt.
+352	oder Feinkost
+353	Anzeige schalten {0}
+354	Obst & Gemüse
+355	Team ist voll
+356	Dein Laden verträgt gerade höchstens {0} Mitarbeiter.{1}
+357	Eröffne {0}, um eine weitere Kraft einzustellen.
+358	Personal · {0}/{1}
+359	Ausbauten
+360	· vorhanden
+361	Heute Morgen gekauft; vor dem Öffnen kannst du es kostenlos zurückgeben.
+362	Beim Verkauf bekommst du 60 % des Preises und den Einkaufswert der Restware zurück.
+363	Beim Verkauf bekommst du 60 % des Preises zurück.
+364	Zurückgeben
+365	Verkaufen
+366	Tägliche Kosten {0}.
+367	Verkaufspreis
+368	Preis von {0} senken
+369	Preis von {0} erhöhen
+370	· verderblich
+371	· an der Theke
+372	Regal {0}/{1} · Lager {2}{3}
+373	Bestellung
+374	Weniger {0} bestellen
+375	Mehr {0} bestellen
+376	Kiste mit {0} · {1}
+377	Eilbestellung · 25 % teurer · Zeit {0}
+378	EILBESTELLUNG
+379	Kommt in etwa 1 Stunde. Solange dieser Bildschirm offen ist, ist das Spiel pausiert.
+380	Morgen · Tag {0}{1}
+381	TAG {0}
+382	Der Lkw bringt deine Bestellung zwischen 9:30 und 11:30.{0}{1}
+383	Gestern netto {0}, Ruf {1}.
+384	Für deinen ersten Tag liegt eine Bestellempfehlung bereit.
+385	Bestellungen und Preise
+386	Nicht genug Geld.
+387	Verringere oder leere die Bestellung; notfalls gib oben einen Ausbau zurück. Du kannst auch ohne Bestellung öffnen und verkaufen, was in den Regalen ist.
+388	Bestellung leeren
+389	Bestellen
+390	Laden öffnen
+391	Marktpreis
+392	{0} teurer
+393	{0} günstiger
+394	Markt {0} ·
+395	· Käufer {0}
+396	In der Kasse {0}
+397	Rest
+398	Nicht genug Geld
+399	{0} Mal wurde nach Obst & Gemüse gefragt, aber du hast keine Abteilung. Spar und denk über eine nach.
+400	{0} Mal wurde nach Käse, Oliven oder Sucuk gefragt, aber du hast keine Feinkost.
+401	Der größte Verlust waren leere Regale: {0} Artikel blieben unverkauft, weil sie fehlten. Fülle vor dem Ansturm auf und bestelle mehr.
+402	{0} Kunden hatten das Warten satt und gingen. Geh zurück an Kasse oder Feinkost, wenn die Schlange wächst.
+403	{0} Mal wurden Preise zu hoch gefunden. Geh näher an den Marktpreis.
+404	Über Nacht ist Obst & Gemüse im Wert von {0} verdorben. Bestelle es in kleineren Mengen öfter.
+405	Heute wurde Ware im Wert von {0} gestohlen. Siehst du jemanden mit weißer (unbezahlter) Tüte an der Kasse vorbei zur Tür gehen, tippe ihn an und dann auf HALT!
+406	Du hast einen Unschuldigen beschuldigt; dein Ruf ist stark gesunken. Halte nur auf, wenn du sicher bist: Ein Dieb geht an der Kasse vorbei mit weißer Tüte zur Tür.
+407	Du hast den Fahrer warten lassen und {0} Gebühr gezahlt.
+408	Ein sauberer Tag. Morgen kommen noch mehr Kunden.
+409	Tagesende · 20 Uhr
+410	TAG {0} BEENDET
+411	Umsatz
+412	davon Lieferung ({0} geliefert{1}{2})
+413	, {0} verspätet
+414	, {0} Artikel fehlten
+415	Zielbelohnungen
+416	Stufenbelohnung
+417	Wareneinsatz
+418	Miete
+419	Löhne ({0} Personen)
+420	Lohn
+421	Abteilungskosten
+422	Verdorbenes Obst & Gemüse
+423	Wartegebühr
+424	Kreditrate{0}
+425	(letzte Rate)
+426	Kreditrate nicht bezahlt
+427	Reingewinn
+428	Kunden im Laden
+429	Kunden, die bezahlt haben
+430	Geduld verloren
+431	Wegen leerem Regal nicht verkauft
+432	Diebe: gefasst / gekommen
+433	Gestohlene Ware
+434	{0} Artikel · {1}
+435	Falsche Beschuldigungen
+436	Zu teuer gefunden
+437	Ruf
+438	Kasse (heute {0} für Ware gezahlt)
+439	Filiale {0} (während du weg warst)
+440	Niemand an der Kasse, der Laden blieb zu
+441	Kunden
+442	· {0} gingen ohne zu warten
+443	Miete, Löhne, Kosten
+444	Autobestellung
+445	Von der Filiale in die Kasse
+446	Ruf der Filiale
+447	Durch leere Regale verloren
+448	Viertelstufe{0}
+449	· heute +{0} Punkte
+450	Aufstieg: {0} · {1}!
+451	{0} tagsüber nicht unterschriebene Lieferungen wurden nachts ins Lager gestellt.
+452	Lektion des Tages:
+453	Zwei Kreditraten in Folge blieben offen; die Bank hat den Laden gepfändet.
+454	Die Kasse ist ins Minus gerutscht; der Laden hat geschlossen.
+455	Neu anfangen
+456	Kundendichte
+457	Multiplikator für Kunden pro Stunde. Der tägliche Anstieg kommt dazu.
+458	Geduld an der Kasse
+459	Durchschnittliche Wartezeit am ersten Tag (bei 1×). Sinkt jeden Tag etwas.
+460	Preisempfindlichkeit
+461	Wartezeit des Fahrers
+462	Wie lange der Lkw an der Hintertür auf eine Unterschrift wartet.
+463	Tageslänge
+464	Wie viele echte Minuten 8:00–20:00 dauert.
+465	Käufer bei 20 % Aufschlag:
+466	· bei 40 % Aufschlag:
+467	Einstellungen
+468	EINSTELLUNGEN
+469	Musik
+470	Morgen-, Tages- und Abendmusik.
+471	An
+472	Aus
+473	Soundeffekte
+474	Kasse, Türglocke, Hupe, Motor und andere Geräusche.
+475	Zweite Filiale
+476	Eröffne einen zweiten Laden in einem anderen Viertel. Kasse, Stufe und Ziele sind gemeinsam.
+477	Neues Viertel{0}
+478	Übergib den Laden und fang woanders neu an. Belohnung: ★{0} Händlerstern (Großhandelsrabatt, Startgeld und Ruf).
+479	Starten
+480	Voraussetzung: {0}, Ruf {1}, Stufe {2}
+481	Speichern
+482	Dein Spiel wird auf diesem Gerät automatisch gespeichert; es geht am selben Tag weiter, auch wenn die App geschlossen wird.
+483	Neues Spiel
+484	Schließen
+485	Balance-Einstellungen
+486	SPIEL MIT DEN ZAHLEN
+487	Diese Zahlen bestimmen, wie schwer und schnell sich das Spiel anfühlt. Ändere sie, spiel einen Tag und sag mir, was sich richtig anfühlte.
+488	Dein Spiel wird auf diesem Gerät automatisch gespeichert; es geht am selben Tag weiter, auch wenn die Seite neu lädt.
+489	Neues Spiel starten
+490	Auf Standard zurücksetzen
+491	{0} freut sich über die Gehaltserhöhung.
+492	{0} hat morgen frei.
+493	{0} wurde entlassen.
+494	Sicher? Der Laden wird übergeben. Tippe noch einmal
+495	Sicher? Dein Spielstand wird gelöscht. Tippe noch einmal
+496	Neues Spiel gestartet.
+497	Spiel fortsetzen
+498	Spiel pausieren
+499	Pausiert.
+500	Musik an.
+501	Musik aus.
+502	Musik ausschalten
+503	Musik einschalten
+504	Eilbestellung
+505	Status
+506	Viertelstufe und Ziele
+507	Ruf-Details
+508	Spieltempo
+509	Draufsicht auf den Laden: Lager, Regale, Kasse, Eingang und Hintertür
+510	Sprache
+511	Weiter ab Tag {0}. Tippe auf die Pause-Taste, um zu starten.
+512	Weiter ab Tag {0}.
+513	gesperrt
+514	{0} s
