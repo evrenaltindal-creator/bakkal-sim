@@ -1,4 +1,6 @@
-<title>Mahalle Bakkalı</title>
+<title>Little Bakkal</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Yazı tipleri (Rubik, Bungee; SIL OFL) uygulamanın içinde gelir, internet gerekmez */
@@ -232,7 +234,7 @@ const capOf = i => Math.round(PRODUCTS[i].cap * (PRODUCTS[i].dept === 'base' && 
 const upkeep = () => UPGRADES.reduce((a, u) => a + (S.up[u.k] ? u.upkeep : 0), 0);
 const caseCost = (i, mult = 1) => Math.round(PRODUCTS[i].caseSize * PRODUCTS[i].cost * mult * (1 - tier().disc - levelDisc() - starDisc()));
 const priceStep = i => (PRODUCTS[i].market >= 100 ? 5 : 1);
-const buyChance = i => { const r = S.prices[i] / PRODUCTS[i].market - (S.tierOff ? 0 : tier().tol); return r <= 1 ? 1 : Math.max(0, 1 - T.sens * (r - 1)); };
+const buyChance = i => { const r = S.prices[i] / PRODUCTS[i].market - (S.tierOff ? 0 : tier().tol) - hood().tol; return r <= 1 ? 1 : Math.max(0, 1 - T.sens * (r - 1)); };
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const fmtN = new Intl.NumberFormat('tr-TR');
 const fmt = n => (n < 0 ? '−' : '') + fmtN.format(Math.abs(Math.round(n))) + ' ₺';
@@ -376,9 +378,9 @@ function spawnCustomer(opt = {}) {
   if (opt.thief) return spawnThief(opt);
   const r = rng();
   let n = r < 0.4 ? 1 : r < 0.8 ? 2 : 3;
-  if (rng() < extraItemChance(S.day)) n++;
-  if (rng() < extraItemChance(S.day) / 2) n++;
-  const pool = PRODUCTS.map((p, i) => ({ i, w: p.weight * demandRamp(i, S.day) })).filter(x => x.w > 0), list = [];
+  if (rng() < extraItemChance(sAge())) n++;
+  if (rng() < extraItemChance(sAge()) / 2) n++;
+  const pool = PRODUCTS.map((p, i) => ({ i, w: p.weight * demandRamp(i, sAge()) })).filter(x => x.w > 0), list = [];
   for (let k = 0; k < n && pool.length; k++) {
     const total = pool.reduce((a, b) => a + b.w, 0);
     let x = rng() * total, idx = 0;
@@ -393,7 +395,7 @@ function spawnCustomer(opt = {}) {
     patience: 0, maxPatience: 0, scanT: 0, serving: false, gone: false, paidItems: 0,
     color: CUST_COLORS[Math.floor(rng() * CUST_COLORS.length)],
     skin: SKINS[Math.floor(rng() * SKINS.length)], hair: HAIRS[Math.floor(rng() * HAIRS.length)], pants: PANTS[Math.floor(rng() * PANTS.length)] };
-  if (S.day >= 8 && rng() < (S.day >= 10 ? 0.12 : 0.06)) dressBlack(c); // masum ama siyah giyen müşteri
+  if (sAge() >= 8 && rng() < (sAge() >= 10 ? 0.12 : 0.06)) dressBlack(c); // masum ama siyah giyen müşteri
   S.customers.push(c);
   S.stats.visitors++;
   sfx('door', 1.5);
@@ -407,9 +409,9 @@ function thiefPlan(d) {
   if (d < 4) return [];
   const at = () => OPEN + 60 + Math.floor(rng() * (CLOSE - OPEN - 150));
   if (d === 4) return [{ at: 600 + Math.floor(rng() * 90), black: true, tutorial: true }];
-  let n = 1, pBlack = 0.85;
-  if (d >= 10) { n = rng() < 0.5 ? 1 : 2; pBlack = 0.3; }
-  if (d >= 15) { n = 2 + (rng() < 0.4 ? 1 : 0); pBlack = 0.15; }
+  let n = Math.max(0, 1 + hood().thief), pBlack = 0.85;
+  if (d >= 10) { n = Math.max(0, (rng() < 0.5 ? 1 : 2) + hood().thief); pBlack = 0.3; }
+  if (d >= 15) { n = Math.max(0, 2 + (rng() < 0.4 ? 1 : 0) + hood().thief); pBlack = 0.15; }
   const plan = [];
   for (let k = 0; k < n; k++) plan.push({ at: at(), black: rng() < pBlack });
   if (d >= 15 && rng() < 0.3) { const t = plan[0]; plan.push({ at: t.at + 1, black: false }); } // iki kişilik ekip
@@ -473,7 +475,7 @@ function thiefEscaped(c) {
   sfx('fee');
   toast(`Biri ödemeden çıktı: ${c.basket.map(b => PRODUCTS[b.i].name).join(', ')} (${fmt(val)}).`);
 }
-function setPatience(c) { c.maxPatience = T.patience * patienceMult(S.day) * tier().pat * (0.8 + rng() * 0.4); c.patience = c.maxPatience; c.scanT = 0; c.serving = false; }
+function setPatience(c) { c.maxPatience = T.patience * patienceMult(sAge()) * tier().pat * (0.8 + rng() * 0.4); c.patience = c.maxPatience; c.scanT = 0; c.serving = false; }
 function nextStop(c) {
   if (c.si >= c.stops.length) { if (c.basket.length && !c.thief) joinQueue(c); else leave(c); return; }
   const st = c.stops[c.si];
@@ -753,9 +755,9 @@ function pkSpawn(dt, hourSec) {
   const P = pkState();
   const packers = working().filter(e => e.role === 'paket').length;
   if (!packers || S.closed || P.list.length >= 2 + packers) return;
-  const rate = 0.9 * packers * dayMult(S.day) * tier().cust / hourSec;
+  const rate = 0.9 * packers * dayMult(sAge()) * tier().cust * hood().cust / hourSec;
   if (rng() >= rate * dt) return;
-  const pool = PRODUCTS.map((p, i) => ({ i, w: unlocked(i) ? p.weight * demandRamp(i, S.day) : 0 })).filter(x => x.w > 0), items = [];
+  const pool = PRODUCTS.map((p, i) => ({ i, w: unlocked(i) ? p.weight * demandRamp(i, sAge()) : 0 })).filter(x => x.w > 0), items = [];
   const n = 2 + Math.floor(rng() * 3);
   for (let k = 0; k < n && pool.length; k++) {
     const total = pool.reduce((a, b) => a + b.w, 0); let x = rng() * total, idx = 0;
@@ -1016,7 +1018,7 @@ function addXP(n) {
 }
 
 /* ---------- Günlük hedefler ---------- */
-const expectedCustomers = () => 52 * T.density * dayMult(S.day) * tier().cust * (1 + levelCust());
+const expectedCustomers = () => 52 * T.density * dayMult(sAge()) * tier().cust * hood().cust * (1 + levelCust());
 const roundTo = (v, s) => Math.max(s, Math.round(v / s) * s);
 const soldOf = idx => idx.reduce((a, i) => a + ((S.stats.sold || [])[i] || 0), 0);
 const GOAL_TYPES = {
@@ -1025,10 +1027,10 @@ const GOAL_TYPES = {
   noAngry: { ok: () => true, make: () => ({ target: 0 }), text: () => 'Hiçbir müşteri beklemekten bıkıp gitmesin', prog: () => S.stats.angry, end: true, fail: () => S.stats.angry > 0 },
   fewMissed: { ok: () => true, make: () => ({ target: Math.max(3, Math.round(expectedCustomers() * 0.08)) }), text: g => `Boş raf yüzünden en fazla ${g.target} satış kaçsın`, prog: () => S.stats.missed, end: true, fail: g => S.stats.missed > g.target },
   truck:   { ok: () => S.deliveries.length > 0 || (S.stats && S.stats.spent > 0), make: () => ({ target: 0 }), text: () => 'Kamyonu bekletmeden imzala', prog: () => S.stats.fees, end: true, fail: () => S.stats.fees > 0 },
-  product: { ok: () => true, make: () => { const pool = PRODUCTS.map((p, i) => i).filter(i => unlocked(i) && demandRamp(i, S.day) > 0); const i = pool[Math.floor(rng() * pool.length)]; const share = PRODUCTS[i].weight / PRODUCTS.reduce((a, p, k) => a + (unlocked(k) ? p.weight * demandRamp(k, S.day) : 0), 0); return { p: i, target: Math.max(4, Math.round(expectedCustomers() * 2 * share * 0.6)) }; }, text: g => `${g.target} ${PRODUCTS[g.p].name} sat`, prog: g => soldOf([g.p]), live: true },
-  packets: { ok: () => emps().some(e => e.role === 'paket'), make: () => ({ target: 4 + Math.floor(S.day / 8) }), text: g => `${g.target} paket siparişi teslim et`, prog: () => S.stats.pkDone, live: true },
-  deli:    { ok: () => S.up.sark, make: () => ({ target: 6 + Math.floor(S.day / 6) }), text: g => `Şarküteriden ${g.target} ürün sat`, prog: () => soldOf([9, 10, 11]), live: true },
-  produce: { ok: () => S.up.manav, make: () => ({ target: 10 + Math.floor(S.day / 4) }), text: g => `Manavdan ${g.target} ürün sat`, prog: () => soldOf([6, 7, 8]), live: true },
+  product: { ok: () => true, make: () => { const pool = PRODUCTS.map((p, i) => i).filter(i => unlocked(i) && demandRamp(i, sAge()) > 0); const i = pool[Math.floor(rng() * pool.length)]; const share = PRODUCTS[i].weight / PRODUCTS.reduce((a, p, k) => a + (unlocked(k) ? p.weight * demandRamp(k, sAge()) : 0), 0); return { p: i, target: Math.max(4, Math.round(expectedCustomers() * 2 * share * 0.6)) }; }, text: g => `${g.target} ${PRODUCTS[g.p].name} sat`, prog: g => soldOf([g.p]), live: true },
+  packets: { ok: () => emps().some(e => e.role === 'paket'), make: () => ({ target: 4 + Math.floor(sAge() / 8) }), text: g => `${g.target} paket siparişi teslim et`, prog: () => S.stats.pkDone, live: true },
+  deli:    { ok: () => S.up.sark, make: () => ({ target: 6 + Math.floor(sAge() / 6) }), text: g => `Şarküteriden ${g.target} ürün sat`, prog: () => soldOf([9, 10, 11]), live: true },
+  produce: { ok: () => S.up.manav, make: () => ({ target: 10 + Math.floor(sAge() / 4) }), text: g => `Manavdan ${g.target} ürün sat`, prog: () => soldOf([6, 7, 8]), live: true },
   repUp:   { ok: () => S.rep < 95, make: () => ({ target: 3 }), text: () => 'İtibarını gün içinde 3 puan artır', prog: () => S.rep - S.stats.repStart, live: true },
 };
 function makeGoals() {
@@ -1037,8 +1039,8 @@ function makeGoals() {
   while (goals.length < 3 && types.length) {
     const k = types.splice(Math.floor(rng() * types.length), 1)[0];
     const g = { type: k, ...GOAL_TYPES[k].make(), done: false, failed: false };
-    g.money = roundTo(100 + 8 * S.day + (GOAL_TYPES[k].end ? 50 : 0), 50);
-    g.xp = 25 + Math.min(25, S.day);
+    g.money = roundTo(100 + 8 * sAge() + (GOAL_TYPES[k].end ? 50 : 0), 50);
+    g.xp = 25 + Math.min(25, sAge());
     goals.push(g);
   }
   S.goals = goals; S.goalsDay = S.day;
@@ -1104,7 +1106,8 @@ function endgameHtml(r) {
     <div class="actions" style="justify-content:flex-start;flex-direction:column;align-items:stretch">
       <button class="btn primary" type="button" data-act="prestige">Yeni mahallede baştan başla (★${k})</button>
       <small style="color:var(--muted)">Dükkânı devredersin, başka bir mahallede küçük bir bakkalla başlarsın. Kalıcı ödül: ★${k} esnaf yıldızı. Toptancı %${Math.round(Math.min(0.1, 0.02 * k) * 100)} indirim, başlangıçta +${fmt(2000 * k)} ve +${Math.min(20, 5 * k)} itibar.</small>
-      <button class="btn ghost" type="button" disabled>İkinci şubeyi aç (yakında)</button>
+      <button class="btn primary" type="button" data-act="branchPick" ${hasBranches() ? 'disabled' : ''}>${hasBranches() ? 'İkinci şuben var' : 'İkinci şubeyi aç · ' + fmt(BRANCH_COST)}</button>
+      <small style="color:var(--muted)">Başka bir mahallede ikinci dükkân. Her sabah hangisinde olacağını seçersin; diğerini elemanların yürütür.</small>
       <button class="btn ghost" type="button" data-act="toMorning">Bu dükkânda devam et</button>
       <small style="color:var(--muted)">Devam edersen bu seçenek Ayarlar'da durur; istediğin zaman yeni mahalleye geçebilirsin.</small>
     </div></div>`;
@@ -1112,10 +1115,198 @@ function endgameHtml(r) {
 function prestige() {
   const k = starCount() + 1, keepTune = T;
   S = newGame();
+  ensureStores();
   S.stars = k; S.money += 2000 * k; S.rep = Math.min(70, 50 + 5 * k); S.phase = 'morning';
   T = keepTune; modal = null; saveGame(); render();
   sfx('level', 0.5);
   toast(`Yeni mahalle, yeni bakkal! ★${k} esnaf yıldızın seninle.`);
+}
+
+/* ---------- Şubeler: ikinci dükkân başka mahallede ---------- */
+// Oyuncu her sabah hangi dükkânda olacağını seçer. Bulunduğu dükkân tam oynanır; diğeri elemanlarla
+// kendi kendine işler (sayılarla hesaplanır) ve arada kriz çıkarır.
+const HOODS = {
+  merkez: { name: 'Merkez', cust: 1, tol: 0, rent: 1, thief: 0, desc: 'İlk dükkânın.' },
+  ogrenci: { name: 'Öğrenci mahallesi', cust: 1.25, tol: -0.08, rent: 0.8, thief: 0, desc: 'Kalabalık ama fiyata çok dikkat eder; kira ucuz.' },
+  site: { name: 'Site', cust: 0.85, tol: 0.15, rent: 1.5, thief: -1, desc: 'Az ama cömert müşteri, pahalıya da alır; kira yüksek, hırsız az.' },
+  carsi: { name: 'Çarşı', cust: 1.4, tol: 0, rent: 1.3, thief: 1, desc: 'Çok kalabalık, hırsız çok; kira yüksek.' },
+};
+const BRANCH_COST = 15000;
+const STORE_KEYS = ['shelves', 'depot', 'prices', 'up', 'emps', 'rep', 'deliveries', 'orders', 'rushOrders', 'customers', 'queue', 'queue2',
+  'sarkQueue', 'pk', 'player', 'cars', 'cands', 'boughtToday', 'thiefPlan', 'sel', 'storeName', 'hood', 'openedDay', 'autoOrder', 'crisis', 'lastSim'];
+const sAge = () => S.day - (S.openedDay || 1) + 1;          // bu dükkânın kaçıncı günü
+const hood = () => HOODS[S.hood || 'merkez'];
+const hasBranches = () => !!(S.branches && S.branches.length > 1);
+const storeName = (b = S) => b.storeName || 'Merkez';
+function ensureStores() {
+  if (S.branches) return;
+  S.storeName = S.storeName || 'Merkez'; S.hood = S.hood || 'merkez'; S.openedDay = S.openedDay || 1;
+  S.branches = [null]; S.active = 0;                      // etkin dükkân S'nin içindedir, diğerleri burada
+}
+function pickStore(src) { const o = {}; for (const k of STORE_KEYS) if (k in src) o[k] = src[k]; return o; }
+function switchStore(k) {
+  ensureStores();
+  if (k === S.active || !S.branches[k]) return;
+  emps();
+  const cur = pickStore(S);
+  for (const key of STORE_KEYS) delete S[key];
+  S.branches[S.active] = cur;
+  Object.assign(S, S.branches[k]);
+  S.branches[k] = null; S.active = k;
+  S.player = { x: REG_PT.x, y: REG_PT.y, path: [], task: { type: 'register' }, carry: null };
+  if (emps().some(e => !e.absent && e.role === 'kasa')) S.player = { x: IDLE_PT.x, y: IDLE_PT.y, path: [], task: null, carry: null };
+  bgKey = '';
+}
+function newStore(h, name) {
+  return {
+    shelves: START_SHELF.slice(), depot: zeros(), prices: PRODUCTS.map(p => p.market), up: { manav: false, sark: false, bigShelves: false, scanner: false },
+    emps: [], rep: Math.min(70, 50 + 5 * starCount()), deliveries: [], orders: DAY1_ORDER.slice(), rushOrders: zeros(), customers: [], queue: [], queue2: [], sarkQueue: [],
+    pk: { list: [], motor: null }, player: { x: REG_PT.x, y: REG_PT.y, path: [], task: { type: 'register' }, carry: null }, cars: [], cands: null,
+    boughtToday: [], thiefPlan: [], sel: null, storeName: name, hood: h, openedDay: S.day + 1, autoOrder: true, crisis: null, lastSim: null,
+  };
+}
+function openBranch(h) {
+  ensureStores();
+  if (hasBranches() || S.money < BRANCH_COST || !HOODS[h]) return;
+  S.money -= BRANCH_COST;
+  S.branches.push(newStore(h, HOODS[h].name));
+  modal = null; render();
+  sfx('level', 0.5);
+  toast(`${HOODS[h].name} şubesi yarın açılıyor! Sabah hangi dükkânda olacağını seçeceksin.`);
+}
+const other = () => (hasBranches() ? S.branches.find(b => b) : null);
+const bUnlocked = (b, i) => PRODUCTS[i].dept === 'base' || !!b.up[PRODUCTS[i].dept];
+const bCap = (b, i) => Math.round(PRODUCTS[i].cap * (PRODUCTS[i].dept === 'base' && b.up.bigShelves ? 1.5 : 1));
+
+/* Sen yokken şube: o günün satışları sayılarla hesaplanır */
+function simBranch(b) {
+  const age = S.day - b.openedDay + 1, H = HOODS[b.hood], T_ = TIERS[tierIdx(b.rep)], r = { name: b.storeName, age };
+  if (age < 1) { r.notOpen = true; return r; }
+  const staff = (b.emps || []).filter(e => !e.absent);
+  const regs = staff.filter(e => e.role === 'kasa' || e.role === 'kasa2'), reyon = staff.some(e => e.role === 'reyon'), sark = staff.some(e => e.role === 'sark');
+  let cust = 52 * T.density * dayMult(age) * T_.cust * (1 + levelCust()) * H.cust * (b.crisisCust || 1);
+  const capacity = regs.reduce((a, e) => a + 110 * e.speed * (b.up.scanner ? 1.4 : 1), 0);
+  r.closed = !regs.length;
+  const served = Math.min(cust, capacity), lost = r.closed ? 0 : Math.max(0, cust - capacity); // kapalı dükkâna gelen kızmaz, başka yere gider
+  const shareSum = PRODUCTS.reduce((a, p, i) => a + (bUnlocked(b, i) ? p.weight * demandRamp(i, age) : 0), 0) || 1;
+  r.revenue = 0; r.cogs = 0; r.missed = 0; r.served = Math.round(served); r.lost = Math.round(lost);
+  PRODUCTS.forEach((p, i) => {
+    if (!bUnlocked(b, i)) return;
+    const demand = served * 2.2 * p.weight * demandRamp(i, age) / shareSum;
+    const ratio = b.prices[i] / p.market - T_.tol - H.tol;
+    const want = demand * (ratio <= 1 ? 1 : Math.max(0, 1 - T.sens * (ratio - 1)));
+    const avail = (p.dept === 'sark' && !sark) ? 0 : b.shelves[i] + (reyon ? b.depot[i] : 0);
+    const sold = Math.floor(Math.min(want, avail));
+    let fromShelf = Math.min(sold, b.shelves[i]); b.shelves[i] -= fromShelf; b.depot[i] -= sold - fromShelf;
+    r.revenue += sold * b.prices[i]; r.cogs += sold * p.cost; r.missed += Math.max(0, want - sold);
+  });
+  r.missed = Math.round(r.missed);
+  if (reyon) PRODUCTS.forEach((p, i) => { if (!bUnlocked(b, i)) return; const mv = Math.min(b.depot[i], bCap(b, i) - b.shelves[i]); b.shelves[i] += mv; b.depot[i] -= mv; });
+  // giderler
+  r.rent = Math.round(rentFor(age) * H.rent);
+  r.upkeep = UPGRADES.reduce((a, u) => a + (b.up[u.k] ? u.upkeep : 0), 0);
+  r.wage = staff.reduce((a, e) => a + e.wage, 0);
+  r.spoiled = 0;
+  if (b.up.manav) PRODUCTS.forEach((p, i) => { if (p.dept !== 'manav') return; const rot = Math.round((b.shelves[i] + b.depot[i]) * SPOIL); r.spoiled += rot * p.cost; const fd = Math.min(rot, b.depot[i]); b.depot[i] -= fd; b.shelves[i] = Math.max(0, b.shelves[i] - (rot - fd)); });
+  // itibar
+  const before = b.rep;
+  b.rep = clamp(b.rep + served * 0.04 - r.missed * 0.1 - lost * 0.15 - (r.closed ? 4 : 0) + (50 - b.rep) * 0.08, 0, 100);
+  r.repDelta = b.rep - before; r.rep = b.rep;
+  // elemanların morali (patron yok)
+  for (const e of b.emps || []) {
+    if (e.absent) { e.morale += 8; continue; }
+    e.days++; e.morale += (e.wage >= e.expect ? 1 : -4) - 2;
+    e.morale = clamp(e.morale, 0, 100);
+  }
+  // gece otomatik sipariş (yarın için)
+  r.orderCost = 0;
+  if (b.autoOrder) {
+    const next = 52 * T.density * dayMult(age + 1) * TIERS[tierIdx(b.rep)].cust * H.cust * 2.2;
+    PRODUCTS.forEach((p, i) => {
+      if (!bUnlocked(b, i)) return;
+      const target = next * p.weight * demandRamp(i, age + 1) / shareSum * 1.05, have = b.shelves[i] + b.depot[i];
+      const cases = Math.max(0, Math.ceil((target - have) / p.caseSize)), cost = cases * caseCost(i);
+      if (cases && S.money - r.orderCost - cost > 0) { r.orderCost += cost; b.depot[i] += cases * p.caseSize; }
+    });
+  }
+  // dükkân sabah kendi kendine açılınca raflar depodan dolar
+  PRODUCTS.forEach((p, i) => { if (!bUnlocked(b, i)) return; const mv = Math.min(b.depot[i], bCap(b, i) - b.shelves[i]); b.shelves[i] += mv; b.depot[i] -= mv; });
+  r.net = r.revenue - r.rent - r.upkeep - r.wage - r.orderCost;
+  S.money += r.revenue - r.rent - r.upkeep - r.wage - r.orderCost;
+  b.crisisCust = 1;
+  b.lastSim = r;
+  return r;
+}
+
+/* Şube krizleri: sabah çıkar, sen karar verirsin; açılışa kadar karar vermezsen en kötüsü olur */
+const CRISES = {
+  cold: { ok: b => b.up.sark || b.up.manav, text: 'Soğutucu bozuldu. Şarküteri ve sebze-meyve bozulmak üzere.',
+    opts: [['Tamirci çağır', 1500, b => {}], ['Boş ver', 0, b => { PRODUCTS.forEach((p, i) => { if (p.dept !== 'base') { b.shelves[i] = Math.floor(b.shelves[i] / 2); b.depot[i] = Math.floor(b.depot[i] / 2); } }); b.rep -= 5; }]] },
+  theft: { ok: () => true, text: 'Gece depoya hırsız girdi; bu hafta yine gelebilir.',
+    opts: [['Bekçi tut', 800, b => {}], ['Kilidi değiştirmekle yetin', 0, b => { b.depot = b.depot.map(v => Math.floor(v * 0.75)); }]] },
+  staff: { ok: b => (b.emps || []).length > 0, text: 'Elemanlar şikâyet ediyor: "Patron hiç uğramıyor."',
+    opts: [['Prim ver', 500, b => { b.emps.forEach(e => { e.morale = clamp(e.morale + 20, 0, 100); }); }], ['Görmezden gel', 0, b => { b.emps.forEach(e => { e.morale = clamp(e.morale - 20, 0, 100); }); }]] },
+  inspect: { ok: () => true, text: 'Belediye denetimi geliyor: tarihi geçmiş ürün kontrolü.',
+    opts: [['Rafları kontrol ettir', 300, b => {}], ['Şansını dene', 0, b => { if (rng() < 0.5) { S.money -= 2000; toast(`${b.storeName}: denetimde ceza yedin, 2.000 ₺.`); } }]] },
+  rival: { ok: () => S.day > 20, text: 'Karşıya zincir market açıldı; müşteriler oraya kayıyor.',
+    opts: [['Açılış kampanyası yap', 2000, b => { b.rep += 8; }], ['Bekle, geçer', 0, b => { b.rep -= 8; b.crisisCust = 0.75; }]] },
+};
+function branchMorning() {
+  const b = other(); if (!b) return;
+  if (S.day < b.openedDay) return;
+  // elemanlar: gelmeme ve istifa
+  b.emps = (b.emps || []).filter(e => {
+    e.absent = rng() < 0.03 + (1 - e.rel) * 0.12 + (e.morale < 35 ? 0.12 : 0);
+    if (e.morale < 18) { b.news = (b.news || []).concat(`${e.name} (${b.storeName}) istifa edip gitti. Sen yokken morali çok düşmüştü.`); return false; }
+    return true;
+  });
+  b.crisis = null;
+  if (S.day > b.openedDay && rng() < 0.4) {
+    const pool = Object.keys(CRISES).filter(k => CRISES[k].ok(b));
+    if (pool.length) b.crisis = { type: pool[Math.floor(rng() * pool.length)], done: false };
+  }
+}
+function resolveCrisis(o, auto) {
+  const b = other(); if (!b || !b.crisis || b.crisis.done) return;
+  const C = CRISES[b.crisis.type], [label, cost, fn] = C.opts[o];
+  if (cost > S.money) { toast('Bunun için kasada para yok.'); return; }
+  S.money -= cost; fn(b); b.rep = clamp(b.rep, 0, 100);
+  b.crisis.done = true; b.crisis.choice = label;
+  if (auto) toast(`${b.storeName}: karar vermedin, "${label}" oldu.`);
+  render();
+}
+function goThere() {
+  const b = other(); if (!b) return;
+  const k = S.branches.indexOf(b);
+  if (b.crisis && !b.crisis.done) { b.crisis.done = true; b.crisis.choice = 'Bizzat gittin, sorun çözüldü'; }
+  switchStore(k);
+  render();
+  toast(`Bugün ${storeName()} dükkânındasın.`);
+}
+function storesHtml() {
+  if (!hasBranches()) return '';
+  const b = other(), ls = b.lastSim, soon = S.day < b.openedDay;
+  const staff = (b.emps || []), present = staff.filter(e => !e.absent);
+  const regs = present.filter(e => e.role === 'kasa' || e.role === 'kasa2').length;
+  const crisis = b.crisis && !b.crisis.done ? CRISES[b.crisis.type] : null;
+  return `<span class="sect">Dükkânlar</span><div class="inv">
+    <div class="invc" style="grid-template-columns:minmax(0,1fr);border:2px solid var(--chrome)"><b>${storeName()} · bugün buradasın</b><p>${hood().desc}</p></div>
+    <div class="invc" style="grid-template-columns:minmax(0,1fr)"><b>${b.storeName}${soon ? ' · yarın açılıyor' : ''}</b>
+      <p>${soon ? 'Yeni şube. İlk gün oraya gidip düzenini kurmanı ve en az bir kasiyer almanı öneririm.' : `Dün: ${ls ? (ls.closed ? '<span class="t-bad">kasada kimse yoktu, dükkân kapalı kaldı</span>' : `${ls.served} müşteri, ciro ${fmt(ls.revenue)}, net <span class="${ls.net < 0 ? 't-bad' : 't-good'}">${fmt(ls.net)}</span>`) : 'henüz rapor yok'}`}<br>
+      İtibar ${Math.round(b.rep)} · Elemanlar ${present.length}/${staff.length}${!regs && !soon ? ' · <span class="t-bad">kasiyer yok: sen gitmezsen satış olmaz</span>' : ''}</p>
+      ${crisis ? `<div class="note" style="margin-top:6px"><b>Kriz:</b> ${crisis.text}</div>
+        <div class="actions" style="justify-content:flex-start">${crisis.opts.map(([l, c], o) => `<button class="btn ghost" type="button" data-act="crisis" data-o="${o}" ${c > S.money ? 'disabled' : ''}>${l}${c ? ' · ' + fmt(c) : ''}</button>`).join('')}</div>` : (b.crisis && b.crisis.done ? `<p>Kriz çözüldü: ${b.crisis.choice}.</p>` : '')}
+      <div class="actions" style="justify-content:flex-start">
+        <button class="btn primary" type="button" data-act="goThere" ${soon ? 'disabled' : ''}>Bugün oraya git${crisis ? ' (krizi çözer)' : ''}</button>
+        <button class="btn ghost" type="button" data-act="autoOrder">Otomatik sipariş: ${b.autoOrder ? 'açık' : 'kapalı'}</button></div>
+      <p>Sen yokken elemanlar çalışır: kasiyer satış yapar, reyoncu rafları depodan doldurur, şarküteri için tezgâhta biri olmalı. Otomatik sipariş her gece eksikleri ana kasadan öder.</p></div>
+  </div>`;
+}
+function branchPickHtml() {
+  return `<div class="head"><span class="eyebrow">İkinci şube · ${fmt(BRANCH_COST)}</span><h2 id="cardTitle">HANGİ MAHALLE?</h2>
+  <p>Şube sıfırdan küçük bir bakkal olarak açılır: kendi rafları, deposu, itibarı, elemanları ve yatırımları olur. Kasa, mahalle seviyesi ve hedefler ortaktır. Her sabah hangi dükkânda olacağını seçersin; diğerini elemanların yürütür.</p></div>
+  <div class="inv">${Object.entries(HOODS).filter(([k]) => k !== 'merkez').map(([k, h]) => `<div class="invc"><b>${h.name}</b><p>${h.desc}</p><button class="btn primary" type="button" data-act="openBranch" data-h="${k}" ${S.money < BRANCH_COST ? 'disabled' : ''}>Aç</button></div>`).join('')}</div>
+  <div class="actions"><button class="btn ghost" type="button" data-act="closeModal">Vazgeç</button></div>`;
 }
 
 /* ---------- Gün akışı ---------- */
@@ -1126,7 +1317,7 @@ function step(dt) {
     if (S.minute >= CLOSE) { S.closed = true; toast('Saat 20:00, kapıyı kapattın. İçerideki müşteriler çıkınca gün biter.'); }
     else {
       const h = clamp(Math.floor(S.minute / 60) - 8, 0, HOURLY.length - 1);
-      const rate = HOURLY[h] * T.density * dayMult(S.day) * tier().cust * (1 + levelCust()) / hourSec;
+      const rate = HOURLY[h] * T.density * dayMult(sAge()) * tier().cust * hood().cust * (1 + levelCust()) / hourSec;
       if (rng() < rate * dt) spawnCustomer();
     }
   }
@@ -1146,7 +1337,7 @@ function step(dt) {
 }
 function endDay() {
   const st = S.stats;
-  S.money -= rentFor(S.day); st.rent = rentFor(S.day);
+  st.rent = Math.round(rentFor(sAge()) * hood().rent); S.money -= st.rent;
   st.upkeep = upkeep(); S.money -= st.upkeep;
   for (const d of S.deliveries) { d.units.forEach((u, i) => { S.depot[i] += u; }); st.overnight++; }
   S.deliveries = [];
@@ -1163,7 +1354,8 @@ function endDay() {
   empEndOfDay(st);
   loanEndOfDay(st);
   addRep((50 - S.rep) * 0.08, 'gece');
-  S.report = { ...st, ask: { ...st.ask }, repWhy: { ...st.repWhy }, day: S.day, repEnd: S.rep, money: S.money, levelUps: (st.levelUps || []).slice() };
+  const branchRep = hasBranches() && other() ? simBranch(other()) : null;
+  S.report = { ...st, ask: { ...st.ask }, repWhy: { ...st.repWhy }, day: S.day, repEnd: S.rep, money: S.money, levelUps: (st.levelUps || []).slice(), branch: branchRep, store: storeName() };
   if (!S.endSeen && endEligible()) { S.report.endgame = true; S.endSeen = true; }
   // gece itibar yavaşça ortalamaya döner
   S.phase = 'report';
@@ -1175,6 +1367,7 @@ function nextMorning() {
   S.customers = []; S.queue = []; S.queue2 = []; S.sarkQueue = []; S.bubbles = [];
   S.player = { x: REG_PT.x, y: REG_PT.y, path: [], task: { type: 'register' }, carry: null };
   empMorning();
+  branchMorning();
   if (emps().some(e => !e.absent && e.role === 'kasa')) S.player = { x: IDLE_PT.x, y: IDLE_PT.y, path: [], task: null, carry: null };
   S.orders = zeros();
   S.phase = 'morning';
@@ -1188,9 +1381,10 @@ function openStore() {
   S.stats = freshStats(S.rep);
   S.stats.spent = total;
   S.boughtToday = [];
-  S.thiefPlan = thiefPlan(S.day); S.sel = null;
+  S.thiefPlan = thiefPlan(sAge()); S.sel = null;
   if (total > 0) S.deliveries.push({ units: S.orders.map((k, i) => (unlocked(i) ? k * PRODUCTS[i].caseSize : 0)), eta: 570 + Math.floor(rng() * 120), status: 'coming', wait: 0, rush: false });
   S.orders = zeros();
+  { const b = other(); if (b && b.crisis && !b.crisis.done) resolveCrisis(CRISES[b.crisis.type].opts.length - 1, true); if (b) b.news = []; }
   const quit = emps().filter(e => e.quitting);
   if (quit.length) { S.emps = emps().filter(e => !e.quitting); toast(quit.map(e => e.name).join(', ') + ' istifa edip gitti.'); }
   if (emps().some(e => e.absent && e.reason)) modal = 'event';
@@ -1518,6 +1712,7 @@ function draw(now) {
     else { c.strokeStyle = '#c4473a'; c.lineWidth = 2; c.strokeRect(cell.x, cell.y, cell.w, cell.h); c.font = '700 8px ' + FONT; c.textAlign = 'center'; outlined(c, 'BOŞ', cell.x + cell.w / 2, cell.y + cell.h / 2 + 3); }
   }
 
+  if (hasBranches()) { c.font = '700 8px ' + FONT; c.textAlign = 'left'; c.fillStyle = 'rgba(255,255,255,.75)'; c.fillText(storeName().toLocaleUpperCase('tr') + ' ŞUBESİ', 8, 11); c.textAlign = 'center'; }
   // yoldan geçenler
   c.save(); c.beginPath(); c.rect(0, 0, W, 30); c.clip();
   for (const car of S.cars || []) drawCar(c, car);
@@ -1660,6 +1855,7 @@ function render() {
   if (modal === 'tune') html = tuneHtml();
   else if (modal === 'rep') html = repHtml();
   else if (modal === 'level') html = levelHtml();
+  else if (modal === 'branchPick') html = branchPickHtml();
   else if (modal === 'event') html = eventHtml();
   else if (modal === 'rush') html = ordersHtml(true);
   else if (S.phase === 'intro') html = introHtml();
@@ -1673,6 +1869,7 @@ function render() {
     if (document.getElementById('goBtn')) refreshOrders(modal === 'rush');
   }
   updateHud(performance.now(), true);
+  if (S.phase !== 'intro') saveGame();
 }
 function introHtml() {
   return `<div class="head"><span class="eyebrow">Prototip 2 · Büyüyen bakkal</span><h2 id="cardTitle">MAHALLE BAKKALI</h2>
@@ -1690,14 +1887,15 @@ function introHtml() {
   <div class="actions"><button class="btn primary" type="button" data-act="toMorning" data-focus>Sabaha geç</button></div>`;
 }
 function newsHtml() {
-  const d = S.day, items = [];
-  items.push(`<b>Bugün:</b> müşteri ${mulTxt(dayMult(d))}, sabır ${pct(patienceMult(d))}, kira ${fmt(rentFor(d))}${upkeep() ? ', bölüm giderleri ' + fmt(upkeep()) : ''}.`);
+  const d = sAge(), items = [];
+  items.push(`<b>Bugün:</b> müşteri ${mulTxt(dayMult(d) * hood().cust)}, sabır ${pct(patienceMult(d))}, kira ${fmt(Math.round(rentFor(d) * hood().rent))}${upkeep() ? ', bölüm giderleri ' + fmt(upkeep()) : ''}.`);
   if (d % 3 === 1 && d > 1) items.push('Ev sahibi kirayı artırdı.');
   const r = S.report;
   if (d === 4) items.push('<b>Dikkat:</b> mahallede hırsızlık olayları başladı. Bugün dükkâna şüpheli biri gelebilir.');
   if (!S.up.manav && d >= 3) items.push(r && r.ask.manav ? `Dün <b>${r.ask.manav} kez</b> sebze-meyve soruldu. Manavın yok.` : 'Mahallede sebze-meyve soranlar başladı.');
   if (!S.up.sark && d >= 5) items.push(r && r.ask.sark ? `Dün <b>${r.ask.sark} kez</b> peynir, zeytin, sucuk soruldu. Şarküterin yok.` : 'Peynir, zeytin soranlar başladı.');
   emps().forEach(e => { if (e.news) items.push(e.news); });
+  if (other() && other().news) other().news.forEach(t => items.push(t));
   if (!emps().length && d >= 2) items.push('Yetişemiyorsan aşağıdan bir eleman alabilirsin.');
   return `<div class="news">${items.map(t => `<div class="note">${t}</div>`).join('')}</div>`;
 }
@@ -1759,8 +1957,8 @@ function ordersHtml(rush) {
   const r = S.report;
   const head = rush
     ? `<span class="eyebrow">Acil sipariş · %25 pahalı · Saat ${hhmm(S.minute)}</span><h2 id="cardTitle">ACİL SİPARİŞ</h2><p>Yaklaşık 1 saat içinde gelir. Bu ekran açıkken oyun durur.</p>`
-    : `<span class="eyebrow">Sabah · ${S.day}. gün</span><h2 id="cardTitle">${S.day}. GÜN</h2><p>Siparişi kamyon 09:30–11:30 arasında getirir.${r ? ' Dün net ' + fmt(netOf(r)) + ', itibar ' + Math.round(r.repEnd) + '.' : ''}${S.day === 1 ? ' İlk gün için önerilen bir sipariş hazır.' : ''}</p>`;
-  return `<div class="head">${head}</div>${rush ? '' : newsHtml() + goalsHtml(false) + empHtml() + invHtml() + bankHtml() + '<span class="sect">Sipariş ve fiyatlar</span>'}<div class="prows">${rows}</div>
+    : `<span class="eyebrow">Sabah · ${S.day}. gün${hasBranches() ? ' · ' + storeName() : ''}</span><h2 id="cardTitle">${S.day}. GÜN</h2><p>Siparişi kamyon 09:30–11:30 arasında getirir.${r ? ' Dün net ' + fmt(netOf(r)) + ', itibar ' + Math.round(r.repEnd) + '.' : ''}${S.day === 1 ? ' İlk gün için önerilen bir sipariş hazır.' : ''}</p>`;
+  return `<div class="head">${head}</div>${rush ? '' : newsHtml() + storesHtml() + goalsHtml(false) + empHtml() + invHtml() + bankHtml() + '<span class="sect">Sipariş ve fiyatlar</span>'}<div class="prows">${rows}</div>
   <div class="total" id="tot"></div>
   <div class="note" id="shortHint" hidden><b>Para yetmiyor.</b> Siparişi azalt ya da sıfırla; gerekirse yukarıdaki yatırımlardan birini geri al. Sipariş vermeden de açabilirsin, raftaki malı satarsın.
   <div class="actions" style="margin-top:8px"><button class="btn ghost" type="button" data-act="${rush ? 'rzero' : 'zero'}">Siparişi sıfırla</button></div></div>
@@ -1834,6 +2032,7 @@ function reportHtml() {
     ${Object.entries(r.repWhy || {}).filter(([, v]) => Math.abs(v) >= 0.5).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).map(([k, v]) => `<dt style="padding-left:12px">${REP_WHY[k]}</dt><dd class="${v > 0 ? 't-good' : 't-bad'}">${v > 0 ? '+' : '−'}${Math.abs(v).toFixed(1).replace('.', ',')}</dd>`).join('')}
     <dt>Kasa (bugün mala ${fmt(r.spent)} ödendi)</dt><dd class="${S.money < 0 ? 't-bad' : ''}">${fmt(S.money)}</dd>
   </dl>
+  ${r.branch && !r.branch.notOpen ? `<span class="sect">${r.branch.name} şubesi (sen yokken)</span><dl class="ledger">${r.branch.closed ? '<dt class="t-bad">Kasada kimse yoktu, dükkân kapalı kaldı</dt><dd></dd>' : ''}<dt>Müşteri</dt><dd>${r.branch.served}${r.branch.lost ? ' · ' + r.branch.lost + ' kişi beklemeden gitti' : ''}</dd><dt>Ciro</dt><dd>${fmt(r.branch.revenue)}</dd><dt>Kira, maaş, giderler</dt><dd>${fmt(-(r.branch.rent + r.branch.wage + r.branch.upkeep))}</dd>${r.branch.orderCost ? `<dt>Otomatik sipariş</dt><dd>${fmt(-r.branch.orderCost)}</dd>` : ''}<dt class="sum">Şubeden kasaya</dt><dd class="sum ${r.branch.net < 0 ? 't-bad' : 't-good'}">${fmt(r.branch.net)}</dd><dt>Şube itibarı</dt><dd>${Math.round(r.branch.rep)} (${r.branch.repDelta >= 0 ? '+' : '−'}${Math.abs(r.branch.repDelta).toFixed(1).replace('.', ',')})</dd>${r.branch.missed ? `<dt>Boş raf yüzünden kaçan</dt><dd>${r.branch.missed}</dd>` : ''}</dl>` : ''}
   ${S.goals && S.goalsDay === r.day ? goalsHtml(true) : ''}
   <span class="sect">Mahalle seviyesi${r.xp ? ' · bugün +' + Math.round(r.xp) + ' puan' : ''}</span>${levelBarHtml()}
   ${(r.levelUps || []).map(l => `<div class="note"><b>Seviye atladın: ${l} · ${levelName(l)}!</b> ${rewardText(l)}</div>`).join('')}
@@ -1854,6 +2053,7 @@ function settingsHtml() {
   <div class="inv">
     <div class="invc"><b>Müzik</b><p>Sabah, gün içi ve akşam müzikleri.</p><button class="btn ${musicOn ? 'primary' : 'ghost'}" type="button" data-act="musicToggle">${musicOn ? 'Açık' : 'Kapalı'}</button></div>
     <div class="invc"><b>Ses efektleri</b><p>Kasa, kapı zili, korna, motor ve diğer sesler.</p><button class="btn ${sfxOn ? 'primary' : 'ghost'}" type="button" data-act="sfxToggle">${sfxOn ? 'Açık' : 'Kapalı'}</button></div>
+    ${(endEligible() || S.endSeen) && !hasBranches() ? `<div class="invc"><b>İkinci şube</b><p>Başka bir mahallede ikinci dükkân aç. Kasa, seviye ve hedefler ortak.</p><button class="btn primary" type="button" data-act="branchPick" ${S.money < BRANCH_COST ? 'disabled' : ''}>${fmt(BRANCH_COST)}</button></div>` : ''}
     ${endEligible() || S.endSeen ? `<div class="invc"><b>Yeni mahalle${starCount() ? ' · ★' + starCount() : ''}</b><p>Dükkânı devret, başka mahallede baştan başla. Ödül: ★${starCount() + 1} esnaf yıldızı (toptancı indirimi, başlangıç parası ve itibar).</p><button class="btn ghost" type="button" data-act="prestige" ${endEligible() ? '' : 'disabled'}>${endEligible() ? 'Başla' : 'Eşik: ' + fmt(END_MONEY) + ', itibar ' + END_REP + ', seviye ' + END_LEVEL}</button></div>` : ''}
     <div class="invc"><b>Kayıt</b><p>Oyunun bu cihazda otomatik kaydediliyor; uygulama kapansa da kaldığın günden devam eder.</p><button class="btn ghost" type="button" data-act="newGame">Yeni oyun</button></div>
   </div>
@@ -1903,6 +2103,11 @@ document.addEventListener('click', e => {
   else if (act === 'sfxToggle') { sfxOn = !sfxOn; try { localStorage.setItem('bakkal.sfx', sfxOn ? 'on' : 'off'); } catch (e) {} render(); }
   else if (act === 'musicToggle') { $('bMusic').click(); render(); }
   else if (act === 'resetTune') { T = { ...DEFAULT_T }; saveTune(); render(); }
+  else if (act === 'branchPick') { modal = 'branchPick'; render(); }
+  else if (act === 'openBranch') openBranch(b.dataset.h);
+  else if (act === 'crisis') resolveCrisis(+b.dataset.o, false);
+  else if (act === 'goThere') { goThere(); S.goalsDay = -1; render(); }
+  else if (act === 'autoOrder') { const o = other(); if (o) { o.autoOrder = !o.autoOrder; render(); } }
   else if (act === 'prestige') {
     if (!confirmNew) { confirmNew = true; b.textContent = 'Emin misin? Bu dükkân devredilir, tekrar bas'; return; }
     confirmNew = false; prestige();
@@ -2001,6 +2206,7 @@ function start(data) {
   let restored = false;
   try { if (data && data.S && data.S.v === 2) { S = data.S; if (data.T) T = { ...DEFAULT_T, ...data.T }; } else { const saved = loadGame(); if (saved && saved.day >= 1 && saved.phase !== 'intro') { S = saved; restored = true; } } } catch (e) {}
   if (restored) { S.bubbles = []; S.fx = []; modal = null; }
+  ensureStores();
   try { window.claude?.hot?.snapshot?.(() => ({ S, T })); } catch (e) {}
   new ResizeObserver(resize).observe(stage);
   resize();

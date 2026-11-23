@@ -10,6 +10,10 @@ Kullanıcıyla Türkçe konuş. Oyundaki her metin şimdilik Türkçedir (7 dil 
   **İnternetten hiçbir şey yüklenmez** (App Store 4.2: uygulama web sitesi gibi davranmamalı).
   Yeni bir dış bağlantı ekleme.
 - Mantıksal tuval 400×720'dir; ölçek ekrana göre hesaplanır.
+- **Şubeler:** etkin dükkânın alanları `S` içindedir (`STORE_KEYS`), diğer dükkân `S.branches` içinde durur;
+  `switchStore` yer değiştirir. Kasa, gün, seviye, hedefler, kredi ortaktır. Oyun kuralı yazarken gün için
+  `S.day` değil dükkânın yaşı `sAge()` kullanılır (yeni şube sıfırdan büyür). Sen yokken şube `simBranch` ile
+  sayılarla hesaplanır.
 
 ## Kurallar
 
