@@ -40,7 +40,7 @@ body{height:100%;margin:0;background:var(--chrome);color:var(--on-chrome);font-f
 #app{height:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:8px;padding-block:10px}
 .hud{position:relative;z-index:30;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) auto;gap:6px}
 .stat{background:var(--chrome-2);border:1px solid var(--chrome-line);border-radius:10px;padding:6px 8px;min-width:0;display:flex;flex-direction:column;gap:2px}
-.stat .lbl{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--on-chrome-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat .lbl{font-size:10px;letter-spacing:.03em;text-transform:uppercase;color:var(--on-chrome-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat b{font-size:15.5px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat b.neg{color:#ff9c8c}
 .repstat{font:inherit;color:inherit;text-align:left;cursor:pointer}
@@ -48,8 +48,8 @@ body{height:100%;margin:0;background:var(--chrome);color:var(--on-chrome);font-f
 #hTier{letter-spacing:.02em;font-size:9.5px}
 .repbar{display:block;height:4px;border-radius:2px;background:var(--chrome-line);overflow:hidden}
 .repbar i{display:block;height:100%;width:50%;background:var(--tag);transition:width .3s}
-.ctrls{display:flex;gap:5px}
-.icon-btn{width:32px;border-radius:10px;border:1px solid var(--chrome-line);background:var(--chrome-2);color:var(--on-chrome);display:grid;place-items:center;font:600 13px var(--ui);cursor:pointer;padding:0}
+.ctrls{display:flex;gap:4px}
+.icon-btn{width:30px;border-radius:10px;border:1px solid var(--chrome-line);background:var(--chrome-2);color:var(--on-chrome);display:grid;place-items:center;font:600 13px var(--ui);cursor:pointer;padding:0}
 .icon-btn svg{width:17px;height:17px;fill:currentColor}
 .icon-btn[aria-pressed="true"]{background:var(--tag);color:var(--tag-ink);border-color:var(--tag)}
 .stage{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center}
@@ -138,7 +138,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--tag);outline-of
     <button class="stat repstat" id="bLevel" type="button" aria-label="Mahalle seviyesi ve hedefler"><span class="lbl" id="hDay">1. gün</span><b id="hClock">08:00</b><span class="lvrow"><em id="hLv">Sv 1</em><span class="repbar"><i id="hXpFill" style="background:#8fd3a0"></i></span></span></button>
     <button class="stat repstat" id="bRep" type="button" aria-label="İtibar ayrıntıları"><span class="lbl" id="hTier">İtibar</span><b id="hRep">50</b><span class="repbar"><i id="hRepFill"></i></span></button>
     <div class="ctrls">
-      <button class="icon-btn" id="bMusic" type="button" aria-label="Müziği kapat" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3.5l10-2v11.2a2.6 2.6 0 1 1-1.6-2.4V5.6L8.6 7v7.7A2.6 2.6 0 1 1 7 12.3z"/></svg></button>
+      <button class="icon-btn" id="bMusic" hidden type="button" aria-label="Müziği kapat" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3.5l10-2v11.2a2.6 2.6 0 1 1-1.6-2.4V5.6L8.6 7v7.7A2.6 2.6 0 1 1 7 12.3z"/></svg></button>
       <button class="icon-btn" id="bPause" type="button" aria-label="Oyunu durdur" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="3" width="4" height="14" rx="1"/><rect x="12" y="3" width="4" height="14" rx="1"/></svg></button>
       <button class="icon-btn" id="bSpeed" type="button" aria-label="Oyun hızı">1,5×</button>
       <button class="icon-btn" id="bTune" type="button" aria-label="Ayarlar"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="4" width="16" height="2" rx="1"/><rect x="2" y="9" width="16" height="2" rx="1"/><rect x="2" y="14" width="16" height="2" rx="1"/><circle cx="7" cy="5" r="2.6"/><circle cx="13" cy="10" r="2.6"/><circle cx="6" cy="15" r="2.6"/></svg></button>
@@ -230,7 +230,7 @@ const sarkSpot = i => (i < 5 ? { x: 314, y: 472 + i * 24 } : { x: Math.max(120, 
 const unlocked = i => PRODUCTS[i].dept === 'base' || !!S.up[PRODUCTS[i].dept];
 const capOf = i => Math.round(PRODUCTS[i].cap * (PRODUCTS[i].dept === 'base' && S.up.bigShelves ? 1.5 : 1));
 const upkeep = () => UPGRADES.reduce((a, u) => a + (S.up[u.k] ? u.upkeep : 0), 0);
-const caseCost = (i, mult = 1) => Math.round(PRODUCTS[i].caseSize * PRODUCTS[i].cost * mult * (1 - tier().disc - levelDisc()));
+const caseCost = (i, mult = 1) => Math.round(PRODUCTS[i].caseSize * PRODUCTS[i].cost * mult * (1 - tier().disc - levelDisc() - starDisc()));
 const priceStep = i => (PRODUCTS[i].market >= 100 ? 5 : 1);
 const buyChance = i => { const r = S.prices[i] / PRODUCTS[i].market - (S.tierOff ? 0 : tier().tol); return r <= 1 ? 1 : Math.max(0, 1 - T.sens * (r - 1)); };
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -1081,11 +1081,41 @@ function levelHtml() {
   const rows = [];
   for (let l = 2; l <= Math.max(10, S.level + 2); l++) rows.push(`<div class="invc${l <= S.level ? ' done' : ''}" style="grid-template-columns:minmax(0,1fr) auto"><b style="grid-column:1">Seviye ${l} · ${levelName(l)}</b><span style="grid-column:2;grid-row:1/span 2;font-size:13px;font-weight:600">${l <= S.level ? '<span class="t-good">✓</span>' : ''}</span><p>${rewardText(l)}</p></div>`);
   return `<div class="head"><span class="eyebrow">Mahalle seviyesi</span><h2 id="cardTitle">${levelName(S.level).toLocaleUpperCase('tr')}</h2>
+  ${starCount() ? `<p><b>★${starCount()} esnaf yıldızı:</b> toptancı %${Math.round(starDisc() * 100)} indirim yapar.</p>` : ''}
   <p>Her satış, teslim edilen paket ve tamamlanan hedef puan kazandırır. Seviye atladıkça para ödülü ve kalıcı avantajlar açılır.</p></div>
   ${levelBarHtml()}
   ${S.phase === 'day' || S.phase === 'morning' ? goalsHtml(S.phase === 'day') : ''}
   <span class="sect">Seviyeler</span><div class="inv">${rows.join('')}</div>
   <div class="actions"><button class="btn primary" type="button" data-act="closeModal" data-focus>Tamam</button></div>`;
+}
+
+
+/* ---------- Oyun sonu: mahallenin efsanesi ---------- */
+const END_MONEY = 30000, END_REP = 80, END_LEVEL = 10;
+const starCount = () => S.stars || 0;                                   // kaç mahalleyi tamamladı
+const starDisc = () => Math.min(0.1, 0.02 * starCount());               // her yıldız toptancıda %2 (en fazla %10)
+const endEligible = () => S.money >= END_MONEY && S.rep >= END_REP && (S.level || 1) >= END_LEVEL;
+function endgameHtml(r) {
+  const k = starCount() + 1;
+  return `<div class="invc" style="grid-template-columns:minmax(0,1fr);border:2px solid var(--tag)">
+    <b style="font-family:var(--display);font-weight:400;font-size:19px;color:var(--chrome)">MAHALLENİN EFSANESİ OLDUN!</b>
+    <p>${r.day} günde küçük bir bakkalı mahallenin gözdesine çevirdin: kasada ${fmt(S.money)}, itibar ${Math.round(S.rep)}, mahalle seviyesi ${S.level}. Bu mahallede yapılacak her şeyi yaptın.</p>
+    <p><b>Şimdi ne yapmak istersin?</b></p>
+    <div class="actions" style="justify-content:flex-start;flex-direction:column;align-items:stretch">
+      <button class="btn primary" type="button" data-act="prestige">Yeni mahallede baştan başla (★${k})</button>
+      <small style="color:var(--muted)">Dükkânı devredersin, başka bir mahallede küçük bir bakkalla başlarsın. Kalıcı ödül: ★${k} esnaf yıldızı. Toptancı %${Math.round(Math.min(0.1, 0.02 * k) * 100)} indirim, başlangıçta +${fmt(2000 * k)} ve +${Math.min(20, 5 * k)} itibar.</small>
+      <button class="btn ghost" type="button" disabled>İkinci şubeyi aç (yakında)</button>
+      <button class="btn ghost" type="button" data-act="toMorning">Bu dükkânda devam et</button>
+      <small style="color:var(--muted)">Devam edersen bu seçenek Ayarlar'da durur; istediğin zaman yeni mahalleye geçebilirsin.</small>
+    </div></div>`;
+}
+function prestige() {
+  const k = starCount() + 1, keepTune = T;
+  S = newGame();
+  S.stars = k; S.money += 2000 * k; S.rep = Math.min(70, 50 + 5 * k); S.phase = 'morning';
+  T = keepTune; modal = null; saveGame(); render();
+  sfx('level', 0.5);
+  toast(`Yeni mahalle, yeni bakkal! ★${k} esnaf yıldızın seninle.`);
 }
 
 /* ---------- Gün akışı ---------- */
@@ -1134,6 +1164,7 @@ function endDay() {
   loanEndOfDay(st);
   addRep((50 - S.rep) * 0.08, 'gece');
   S.report = { ...st, ask: { ...st.ask }, repWhy: { ...st.repWhy }, day: S.day, repEnd: S.rep, money: S.money, levelUps: (st.levelUps || []).slice() };
+  if (!S.endSeen && endEligible()) { S.report.endgame = true; S.endSeen = true; }
   // gece itibar yavaşça ortalamaya döner
   S.phase = 'report';
   render();
@@ -1589,6 +1620,7 @@ function updateHud(now, force) {
   if (!force && now - lastHud < 120) return;
   lastHud = now;
   $('hMoney').textContent = fmt(S.money);
+  $('hMoney').style.fontSize = fmt(S.money).length > 7 ? '13px' : '';
   $('hMoney').classList.toggle('neg', S.money < 0);
   ensureLevel();
   $('hDay').textContent = S.day + '. gün';
@@ -1773,6 +1805,7 @@ function reportHtml() {
   ].filter(l => l[0] > 0).sort((a, b) => b[0] - a[0]);
   const lesson = leaks.length ? leaks[0][1] : 'Temiz bir gün. Yarın müşteri daha da artacak.';
   return `<div class="head"><span class="eyebrow">Gün sonu · 20:00</span><h2 id="cardTitle">${r.day}. GÜN KAPANDI</h2></div>
+  ${r.endgame && !broke ? endgameHtml(r) : ''}
   <dl class="ledger">
     <dt>Ciro</dt><dd>${fmt(r.revenue)}</dd>
     ${r.pkDone || r.pkLate ? `<dt style="padding-left:12px">içinden paket servis (${r.pkDone} teslim${r.pkLate ? ', ' + r.pkLate + ' gecikti' : ''}${r.pkMissing ? ', ' + r.pkMissing + ' ürün eksik' : ''})</dt><dd>${fmt(r.pkRevenue)}</dd>` : ''}
@@ -1821,6 +1854,7 @@ function settingsHtml() {
   <div class="inv">
     <div class="invc"><b>Müzik</b><p>Sabah, gün içi ve akşam müzikleri.</p><button class="btn ${musicOn ? 'primary' : 'ghost'}" type="button" data-act="musicToggle">${musicOn ? 'Açık' : 'Kapalı'}</button></div>
     <div class="invc"><b>Ses efektleri</b><p>Kasa, kapı zili, korna, motor ve diğer sesler.</p><button class="btn ${sfxOn ? 'primary' : 'ghost'}" type="button" data-act="sfxToggle">${sfxOn ? 'Açık' : 'Kapalı'}</button></div>
+    ${endEligible() || S.endSeen ? `<div class="invc"><b>Yeni mahalle${starCount() ? ' · ★' + starCount() : ''}</b><p>Dükkânı devret, başka mahallede baştan başla. Ödül: ★${starCount() + 1} esnaf yıldızı (toptancı indirimi, başlangıç parası ve itibar).</p><button class="btn ghost" type="button" data-act="prestige" ${endEligible() ? '' : 'disabled'}>${endEligible() ? 'Başla' : 'Eşik: ' + fmt(END_MONEY) + ', itibar ' + END_REP + ', seviye ' + END_LEVEL}</button></div>` : ''}
     <div class="invc"><b>Kayıt</b><p>Oyunun bu cihazda otomatik kaydediliyor; uygulama kapansa da kaldığın günden devam eder.</p><button class="btn ghost" type="button" data-act="newGame">Yeni oyun</button></div>
   </div>
   <div class="actions"><button class="btn primary" type="button" data-act="closeModal" data-focus>Kapat</button></div>`;
@@ -1869,6 +1903,10 @@ document.addEventListener('click', e => {
   else if (act === 'sfxToggle') { sfxOn = !sfxOn; try { localStorage.setItem('bakkal.sfx', sfxOn ? 'on' : 'off'); } catch (e) {} render(); }
   else if (act === 'musicToggle') { $('bMusic').click(); render(); }
   else if (act === 'resetTune') { T = { ...DEFAULT_T }; saveTune(); render(); }
+  else if (act === 'prestige') {
+    if (!confirmNew) { confirmNew = true; b.textContent = 'Emin misin? Bu dükkân devredilir, tekrar bas'; return; }
+    confirmNew = false; prestige();
+  }
   else if (act === 'restart') { S = newGame(); S.phase = 'morning'; saveGame(); render(); }
   else if (act === 'newGame') {
     if (!confirmNew) { confirmNew = true; b.textContent = 'Emin misin? Kayıt silinir, tekrar bas'; return; }

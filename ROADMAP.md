@@ -11,7 +11,7 @@
 | 2 | Ses efektleri (kasa, kapı zili, kamyon kornası, motorcu, poşet, kızgın müşteri, seviye) | ✅ |
 | 3 | Hırsız: 4. gün ilk (siyah kapüşonlu, öğretici), 5–9 günde 1, 10+ normal kıyafetli ve davranışından anlaşılan, 15+ ara sıra iki kişilik ekip. Yanlış kişiyi durdurmak itibarı sert düşürür | ✅ |
 | 4 | Hedefler ve mahalle seviyesi (günde 3 hedef, 10 seviye, para ve kalıcı avantaj ödülleri) | ✅ |
-| 5 | Oyun sonu: belirli bir eşiğe (ör. 30.000 ₺ ve itibar 100) ulaşınca oyuncuya seçenek: yeni şube aç ya da yeniden başla (kalıcı avantajla) | ⬜ |
+| 5 | Oyun sonu: 30.000 ₺ + itibar 80 + seviye 10 olunca "Mahallenin efsanesi" ekranı. Seçenekler: yeni mahallede baştan başla (★ esnaf yıldızı: toptancı indirimi, başlangıç parası ve itibarı) ya da devam et. **İkinci şube** ilk güncellemeye kaldı. | 🟡 |
 | 6 | İsim: **Little Bakkal** + 7 dil: tr, en, de, es, pt-BR, ru, ar | ⬜ |
 | 7 | iOS paketi (WKWebView/Capacitor, internetsiz) → TestFlight, 5–10 kişi bir hafta Ses oturumu `ambient` olmalı: oyuncu kendi müziğini (Spotify vb.) dinlerken oyun onu durdurmamalı, efektler üstüne çalmalı. | ⬜ |
 | 8 | Düzeltmeler → gizlilik sayfası, ekran görüntüleri → App Store | ⬜ |
