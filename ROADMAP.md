@@ -13,7 +13,7 @@
 | 4 | Hedefler ve mahalle seviyesi (günde 3 hedef, 10 seviye, para ve kalıcı avantaj ödülleri) | ✅ |
 | 5 | Oyun sonu: belirli bir eşiğe (ör. 30.000 ₺ ve itibar 100) ulaşınca oyuncuya seçenek: yeni şube aç ya da yeniden başla (kalıcı avantajla) | ⬜ |
 | 6 | İsim: **Little Bakkal** + 7 dil: tr, en, de, es, pt-BR, ru, ar | ⬜ |
-| 7 | iOS paketi (WKWebView/Capacitor, internetsiz) → TestFlight, 5–10 kişi bir hafta | ⬜ |
+| 7 | iOS paketi (WKWebView/Capacitor, internetsiz) → TestFlight, 5–10 kişi bir hafta Ses oturumu `ambient` olmalı: oyuncu kendi müziğini (Spotify vb.) dinlerken oyun onu durdurmamalı, efektler üstüne çalmalı. | ⬜ |
 | 8 | Düzeltmeler → gizlilik sayfası, ekran görüntüleri → App Store | ⬜ |
 
 ## Sonrası
